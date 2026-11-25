@@ -1,12 +1,12 @@
 ---
-description: Nadrzędna topologia projektu i podstawowe zakazy (Always-On)
+description: Nadrzędna topologia bazy wiedzy tokensavemaxxing i zakazy (Always-On)
 alwaysApply: true
 ---
 
 # Topologia Projektu i Konwencje Bazowe
 
-- Stack technologiczny: TypeScript, Node.js (v20+), Next.js App Router, Tailwind CSS, Prisma.
-- Menedżer pakietów: wyłącznie `pnpm` (nigdy `npm install` ani `yarn`).
-- Mapa repozytorium: przed rozpoczęciem eksploracji sprawdź `.cursor/REPO-MAP.md`.
-- Zakazane polecenia: nigdy nie uruchamiaj skryptów seedujących bazę produkcyjną ani komend z flagą `--force`.
-- Wzorce architektoniczne: wzoruj się na strukturze modułów w `src/modules/core/`.
+- Rola repozytorium: Baza wiedzy, playbooks, artykuły i narzędzia optymalizacji tokenowej agentów.
+- Stack technologiczny: Markdown (GFM), Python 3 (standard lib, AST), Bash (POSIX).
+- Kodowanie i formatowanie: Zawsze UTF-8, ścisłe zachowanie integralności linków relatywnych.
+- Mapa repozytorium: Przed eksploracją sprawdź `.cursor/REPO-MAP.md` oraz indeksy `README.md` w podkatalogach.
+- Higiena kontekstu: Zakaz dodawania niezamierzonych binarek, AI slop i rozwlekłych bloków kodu w regułach.

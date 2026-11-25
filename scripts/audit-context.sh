@@ -4,6 +4,10 @@
 set -e
 
 PROJECT_DIR="${1:-.}"
+if [ ! -d "$PROJECT_DIR" ]; then
+    echo "Błąd: Katalog '$PROJECT_DIR' nie istnieje." >&2
+    exit 1
+fi
 cd "$PROJECT_DIR"
 
 echo "=== AUDYT KONTEKSTU AGENTOWEGO: $PROJECT_DIR ==="
@@ -43,12 +47,12 @@ if [ -d ".cursor/rules" ]; then
             # Proste oszacowanie: 1 słowo ~= 1.33 tokena
             TOKENS=$(( WORDS * 4 / 3 ))
             
-            IS_ALWAYS=$(grep -i "alwaysApply:\s*true" "$rule" || true)
+            IS_ALWAYS=$(grep -i -E "alwaysApply:[[:space:]]*true" "$rule" || true)
             if [ -n "$IS_ALWAYS" ]; then
                 echo "🔴 [ALWAYS-ON] $NAME: ~$TOKENS tokenów ($WORDS słów)"
                 TOTAL_ALWAYS_WORDS=$(( TOTAL_ALWAYS_WORDS + WORDS ))
             else
-                GLOBS=$(grep -i "globs:" "$rule" || true)
+                GLOBS=$(grep -i -E "globs:[[:space:]]*" "$rule" || true)
                 echo "🟢 [CONDITIONAL] $NAME ($GLOBS): ~$TOKENS tokenów (koszt startowy: 0)"
             fi
         fi

@@ -1,4 +1,4 @@
-# Git ignore for agentic-flow repo
+# Git ignore for tokensavemaxxing repo
 .venv/
 __pycache__/
 *.pyc
