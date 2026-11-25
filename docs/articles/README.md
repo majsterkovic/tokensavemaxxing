@@ -18,6 +18,7 @@ Zbiór syntez najważniejszych badań empirycznych, postów technicznych twórc�
 | [token-finops-and-benchmarks.md](token-finops-and-benchmarks.md) | Wielka synteza FinOps i niezależnych benchmarków | Bruniaux, Glean, Silfverskiöld, Concordia, Qt.io (2026) | RTK (48–81% cięcia CLI), ChatDev (59.4% w code review), deterministyczny LOOP replay (>93% oszczędności). |
 | [code-navigation-benchmarks.md](code-navigation-benchmarks.md) | Grep vs AST vs LSP vs Code Graph | arXiv:2608.13568v1, ast-grep, Repowise, Antão Almada (2026) | AST tnie 35–55% kosztów; LSP droższe o 6–19% w wyszukiwaniu, ale 5x–1441x tańsze przy wieloplikowym refaktoringu. |
 | [agent-skills-ecosystem-2026.md](agent-skills-ecosystem-2026.md) | Ekosystem Agent Skills i Standard SKILL.md | agentskills.io, obra/superpowers, Firecrawl, Agentailor | Lazy-loading instrukcji; katalogi 3000+ skilli; wzorce Grill Me, Handoff i zasady Karpathy'ego. |
+| [dynamic-context-pruning-paper-2305-15805.md](dynamic-context-pruning-paper-2305-15805.md) | Dynamic Context Pruning (arXiv:2305.15805) | ETH Zürich, CSEM, Basel (NeurIPS) | Teoretyczny dowód, że do 80% tokenów kontekstu można bezpiecznie wyciąć bez utraty jakości (2x throughput). |
 
 ---
 
