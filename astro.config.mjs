@@ -5,6 +5,12 @@ import starlight from '@astrojs/starlight';
 export default defineConfig({
   site: 'https://majsterkovic.github.io',
   base: '/tokensavemaxxing',
+  redirects: {
+    '/articles/readme': '/tokensavemaxxing/articles/',
+    '/tools/readme': '/tokensavemaxxing/tools/',
+    '/playbooks/readme': '/tokensavemaxxing/playbooks/',
+    '/architecture/readme': '/tokensavemaxxing/architecture/',
+  },
   integrations: [
     starlight({
       title: 'tokensavemaxxing',
