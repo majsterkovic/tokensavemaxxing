@@ -3,9 +3,6 @@ title: "Notatka Narzędziowa: RTK (Rust Token Killer — `rtk-ai/rtk`)"
 description: "Notatka Narzędziowa: RTK (Rust Token Killer — `rtk-ai/rtk`)"
 ---
 
-
-# Notatka Narzędziowa: RTK (Rust Token Killer — `rtk-ai/rtk`)
-
 > **Rola w ekosystemie**: Wysokowydajny proxy CLI w języku Rust, redukujący zużycie tokenów z wyjścia terminala o **60% do 90%** przed wysłaniem do okna kontekstowego agenta.
 
 ---

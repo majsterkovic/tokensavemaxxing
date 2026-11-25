@@ -3,9 +3,6 @@ title: "Playbook 02: Diagnostyka Błędów i Root Cause Analysis (RCA)"
 description: "Playbook 02: Diagnostyka Błędów i Root Cause Analysis (RCA)"
 ---
 
-
-# Playbook 02: Diagnostyka Błędów i Root Cause Analysis (RCA)
-
 Procedura lokalizacji i usuwania trudnych błędów oraz anomalii regresyjnych bez zanieczyszczania kontekstu setkami linii logów.
 
 ---

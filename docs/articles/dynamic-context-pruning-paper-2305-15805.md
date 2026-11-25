@@ -3,9 +3,6 @@ title: "Dynamic Context Pruning (DCP): Fundament Teoretyczny (arXiv:2305.15805)"
 description: "Dynamic Context Pruning (DCP): Fundament Teoretyczny (arXiv:2305.15805)"
 ---
 
-
-# Dynamic Context Pruning (DCP): Fundament Teoretyczny (arXiv:2305.15805)
-
 Szczegółowa analiza przełomowej pracy naukowej:
 **"Dynamic Context Pruning for Efficient and Interpretable Autoregressive Transformers"**
 *Autorzy*: Sotiris Anagnostidis, Dario Pavllo, Luca Biggio, Lorenzo Noci, Aurélien Lucchi, Thomas Hofmann (ETH Zürich, CSEM, University of Basel / NeurIPS).

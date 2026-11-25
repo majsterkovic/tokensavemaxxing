@@ -3,9 +3,6 @@ title: "Hierarchia Kontekstu (4-Warstwowy Model Pamięci Agenta)"
 description: "Hierarchia Kontekstu (4-Warstwowy Model Pamięci Agenta)"
 ---
 
-
-# Hierarchia Kontekstu (4-Warstwowy Model Pamięci Agenta)
-
 Formalny model warstwowego ładowania kontekstu, zapewniający równowagę między dostępnością wiedzy a dyscypliną budżetu tokenowego.
 
 ---

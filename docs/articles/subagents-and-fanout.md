@@ -1,10 +1,7 @@
 ---
 title: "Subagenty, Fan-Out i Izolacja Kontekstu Badawczego"
-description: "⚠️"
+description: "Wzorce izolacji kontekstu badawczego: subagenty Scout/Builder, równoległy fan-out i redukcja kosztów sesji głównej."
 ---
-
-
-# Subagenty, Fan-Out i Izolacja Kontekstu Badawczego
 
 Analiza wzorców architektonicznych orkiestracji subagentów w nowoczesnych harnessach deweloperskich (Claude Code 2.1+, Google Antigravity Swarm, Cursor Subagents).
 

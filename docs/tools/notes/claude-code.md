@@ -3,9 +3,6 @@ title: "Notatka Narzędziowa: Claude Code (Anthropic CLI)"
 description: "Notatka Narzędziowa: Claude Code (Anthropic CLI)"
 ---
 
-
-# Notatka Narzędziowa: Claude Code (Anthropic CLI)
-
 > **Rola w ekosystemie**: Wykonawca zaawansowanego refaktoringu, trudnych zmian architektonicznych i precyzyjnych subagentów badawczych w terminalu.
 
 ---

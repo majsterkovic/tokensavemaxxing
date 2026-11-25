@@ -3,9 +3,6 @@ title: "Metryki, Pomiary Kontekstu i Ewaluacje (Evals)"
 description: "Metryki, Pomiary Kontekstu i Ewaluacje (Evals)"
 ---
 
-
-# Metryki, Pomiary Kontekstu i Ewaluacje (Evals)
-
 Przewodnik po pomiarach telemetrycznych efektywności agentów, kalkulacji kosztów i zapobieganiu domysłom przy optymalizacji środowiska programistycznego.
 
 ---

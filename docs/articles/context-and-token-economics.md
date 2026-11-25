@@ -3,9 +3,6 @@ title: "Ekonomia Tokenów, Prompt Cache i Cięcie Narzędzi"
 description: "Ekonomia Tokenów, Prompt Cache i Cięcie Narzędzi"
 ---
 
-
-# Ekonomia Tokenów, Prompt Cache i Cięcie Narzędzi
-
 Synteza badań i pomiarów telemetrycznych z realnych sesji deweloperskich (w tym Cursor Engineering Blog z września 2026 oraz publikacja Paritok arXiv:2609.22114).
 
 ---

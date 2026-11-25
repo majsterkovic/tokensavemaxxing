@@ -3,9 +3,6 @@ title: "Notatka Narzędziowa: Modele Lokalne w Środowisku 12 GB VRAM"
 description: "Notatka Narzędziowa: Modele Lokalne w Środowisku 12 GB VRAM"
 ---
 
-
-# Notatka Narzędziowa: Modele Lokalne w Środowisku 12 GB VRAM
-
 > **Rola w ekosystemie**: Zerowy koszt tokenowy (0 zł / 0 limitów API). Idealna warstwa do wstępnego planowania ("Thinking Mini"), generowania testów jednostkowych, lokalnego formatowania oraz asystowania w OpenCode.
 
 ---
@@ -22,7 +19,7 @@ Karta graficzna z 12 GB VRAM (np. RTX 3060 12GB lub RTX 4070 12GB) to idealny pu
 
 | Model | Rozmiar / Kwantyzacja | Użycie VRAM | Główna rola w Tokensavemaxxing |
 |---|---|---|---|
-| **Inkling 2 Mini** (Thinking Machines) | Looped MoE (26.4B tot / 3.4B act, NVFP4/Q4) | ~9–11 GB (GGUF/offload) | **Przełomowy Looped MoE**: 48 przejść logicznych, multimodalny, 1M kontekstu. Głębokie rozumowanie bez rozmiaru 70B! Szczegóły: [inkling-2-mini-architecture.md](../../articles/inkling-2-mini-architecture.md) |
+| **Inkling 2 Mini** (Thinking Machines) | Looped MoE (26.4B tot / 3.4B act, NVFP4/Q4) | ~9–11 GB (GGUF/offload) | **Przełomowy Looped MoE**: 48 przejść logicznych, multimodalny, 1M kontekstu. Głębokie rozumowanie bez rozmiaru 70B! Szczegóły: [Architektura Inkling 2 Mini](/tokensavemaxxing/articles/inkling-2-mini-architecture/) |
 | **DeepSeek-R1-Distill-Qwen-7B** | `Q5_K_M` lub `Q6_K` | ~7.2 GB | **"Thinking Mini"**: Lokalne rozumowanie, analiza edge-case'ów, planowanie kroków przed wysłaniem do API |
 | **Qwen 2.5 Coder 14B** | `Q4_K_M` | ~9.8 GB | **Lokalny Programista**: Najsilniejszy model 14B na rynku, rozumie TypeScript/Python, generuje złożone funkcje |
 | **Qwen 2.5 Coder 7B** | `Q8_0` | ~8.4 GB | **Błyskawiczny Asystent**: Niezwykle szybki, bezbłędny w prostych funkcjach i testach jednostkowych |

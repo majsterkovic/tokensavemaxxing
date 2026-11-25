@@ -3,9 +3,6 @@ title: "DYCP: Dynamiczny Pruning Dialogów z Algorytmem Kadane'a (arXiv:2601.079
 description: "DYCP: Dynamiczny Pruning Dialogów z Algorytmem Kadane'a (arXiv:2601.07994)"
 ---
 
-
-# DYCP: Dynamiczny Pruning Dialogów z Algorytmem Kadane'a (arXiv:2601.07994)
-
 Analiza techniczna publikacji naukowej:
 **"DYCP: Dynamic Context Pruning for Long-Form Dialogue with LLMs"**
 *Autorzy*: Nayoung Choi, Jonathan Zhang, Jinho D. Choi (Emory University, 2026).

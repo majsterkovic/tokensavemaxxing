@@ -1,31 +1,23 @@
 ---
 title: "Receptury Operacyjne i Playbooki (Flows)"
-description: "Receptury Operacyjne i Playbooki (Flows)"
+description: "Ustandaryzowane procedury pracy z agentami AI: feature dev, debugging RCA, tokensavemaxxing, multi-repo i code review."
 ---
 
-
-# Receptury Operacyjne i Playbooki (Flows)
-
-Zbiór ustandaryzowanych, powtarzalnych procedur pracy z agentami AI dla typowych scenariuszy inżynierii oprogramowania.
-
----
+Zbiór powtarzalnych procedur pracy z agentami AI dla typowych scenariuszy inżynierii oprogramowania.
 
 ## 📋 Spis Receptur Operacyjnych
 
 | Playbook | Scenariusz zastosowania | Kluczowa technika |
 |---|---|---|
-| [01-feature-development.md](01-feature-development.md) | Implementacja nowej funkcjonalności od zera | Pętla Spec-First, subagent badawczy, kontrakt API, weryfikacja TDD |
-| [02-debugging-and-rca.md](02-debugging-and-rca.md) | Diagnoza błędu produkcyjnego i Root Cause Analysis | Hipoteza -> Minimalny odczyt logów -> Test reprodukcyjny -> Naprawa |
-| [03-token-savemaxxing.md](03-token-savemaxxing.md) | Kompleksowy program optymalizacji kosztów tokenów (3 repo) | Pomiary, 4 warstwy redukcji, repo-map, prompt cache, pułapki |
-| [04-multi-repo-coordination.md](04-multi-repo-coordination.md) | Praca w architekturach frontend + backend + e2e | Folder-scoped workspaces, zapobieganie kolizji reguł, symlinki |
-| [05-code-review-and-refactor.md](05-code-review-and-refactor.md) | Bezpieczny refaktoring i automatyczny audyt PR | Subagent w roli bezstronnego recenzenta, kontrola regresji typów |
+| [01: Feature Development](/tokensavemaxxing/playbooks/01-feature-development/) | Implementacja nowej funkcji od zera | Pętla Spec-First, subagent badawczy, weryfikacja TDD |
+| [02: Debugging i RCA](/tokensavemaxxing/playbooks/02-debugging-and-rca/) | Diagnoza błędu i Root Cause Analysis | Hipoteza → Minimalny odczyt logów → Test reprodukcyjny |
+| [03: tokensavemaxxing](/tokensavemaxxing/playbooks/03-token-savemaxxing/) | Optymalizacja kosztów tokenów (3 repo) | Pomiary, 4 warstwy redukcji, repo-map, prompt cache |
+| [04: Multi-Repo Coordination](/tokensavemaxxing/playbooks/04-multi-repo-coordination/) | Praca w układzie frontend + backend + e2e | Folder-scoped workspaces, zapobieganie kolizji reguł |
+| [05: Code Review & Refactor](/tokensavemaxxing/playbooks/05-code-review-and-refactor/) | Bezpieczny refaktoring i audyt PR | Subagent w roli bezstronnego recenzenta, kontrola typów |
 
----
+## 🎯 Budowa każdego playbooka
 
-## 🎯 Jak Korzystać z Playbooków
-
-Każdy playbook definiuje:
-1. **Wstępne wymagania (Prerequisites)**: Co musi być przygotowane przed uruchomieniem czatu.
-2. **Kroki tura po turze (Turn-by-Turn Flow)**: Dokładne instrukcje, co pisze człowiek, a co wykonuje agent.
-3. **Kryteria ukończenia (Definition of Done)**: Kiedy bezwzględnie należy zamknąć sesję i nie dopuścić do "dopytywania dla pewności".
-4. **Gotowe szablony promptów do wklejenia**.
+1. **Prerequisites** — co przygotować przed startem sesji.
+2. **Turn-by-Turn Flow** — dokładny podział ról między człowieka i agenta.
+3. **Definition of Done** — kiedy zamknąć sesję, zanim pojawi się kosztowne „dopytywanie dla pewności”.
+4. **Gotowe szablony promptów** — do bezpośredniego skopiowania.

@@ -3,9 +3,6 @@ title: "Kompendium: Ekosystem 4 Narzędzi Redukcji Tokenów (RTK, Context Mode, 
 description: "Kompendium: Ekosystem 4 Narzędzi Redukcji Tokenów (RTK, Context Mode, Ponytail, Caveman)"
 ---
 
-
-# Kompendium: Ekosystem 4 Narzędzi Redukcji Tokenów (RTK, Context Mode, Ponytail, Caveman)
-
 Szczegółowy przegląd nowoczesnego stosu FinOps dla programowania agentowego (opisanego m.in. w DataCamp i analizach Floriana Bruniaux).
 
 ---
@@ -49,7 +46,7 @@ Tokeny w pętli agenta uciekają w 4 różnych punktach. Każde z poniższych na
 - **Co optymalizuje**: To, co agent **odczytuje z procesów powłoki**.
 - **Mechanizm**: Przechwytuje wywołania `git`, `cargo`, `npm`, `pytest`, `docker`. Zamiast 500 linii przechodzących testów przekazuje jedną linijkę podsumowania i wyciąga wyłącznie błędy.
 - **Zysk**: 60% – 90% redukcji tokenów wyjściowych z komend.
-- **Więcej**: [rtk.md](rtk.md).
+- **Więcej**: [Notatka o RTK](/tokensavemaxxing/tools/notes/rtk/).
 
 ---
 

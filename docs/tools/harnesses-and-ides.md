@@ -3,9 +3,6 @@ title: "Środowiska Wykonawcze i Harnessy"
 description: "Środowiska Wykonawcze i Harnessy"
 ---
 
-
-# Środowiska Wykonawcze i Harnessy
-
 Szczegółowy przegląd najpopularniejszych harnessów i platform agentowych pod kątem zarządzania kontekstem, zachowania pamięci podręcznej i integracji w ekosystemie deweloperskim.
 
 ---

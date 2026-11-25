@@ -1,10 +1,7 @@
 ---
 title: "Inwentarz Narzędzi — Kompletny Stos Technologiczny"
-description: "⚠️"
+description: "Kompletny przegląd stosu technologicznego (T3 Code, Herdr, Claude Code, Codex, Antigravity, OpenCode, WSL, Local LLM) i routing zadań."
 ---
-
-
-# Inwentarz Narzędzi — Kompletny Stos Technologiczny
 
 Szczegółowy przegląd i charakterystyka wszystkich narzędzi dostępnych w Twoim środowisku deweloperskim, wraz z przypisaniem ról w architekturze **tokensavemaxxing**.
 
@@ -124,10 +121,10 @@ Dysponujesz kartą z **12 GB pamięci VRAM** (np. RTX 3060 12GB lub RTX 4070 12G
 
 | Rola | Rekomendowane Narzędzie | Model | Koszt | Dedykowana notatka |
 |---|---|---|---|---|
-| **Zarządzanie sesjami i wątkami** | T3 Code / Herdr | — | 0 | [t3-code.md](notes/t3-code.md), [herdr.md](notes/herdr.md) |
-| **Eksploracja i Scout (czytanie)** | Antigravity / OpenCode | Gemini Flash / Haiku / Qwen 7B | Bardzo niski / 0 | [antigravity-cli.md](notes/antigravity-cli.md), [opencode.md](notes/opencode.md) |
-| **Architektura i Planowanie** | Claude Code / T3 Code / Antigravity | Claude 3.7 Sonnet / o3-mini | Płatny (inwestycja) | [claude-code.md](notes/claude-code.md), [codex.md](notes/codex.md) |
-| **Trudna Implementacja & RCA** | Claude Code / Codex | Claude 3.7 Sonnet / o3-mini | Płatny | [claude-code.md](notes/claude-code.md), [codex.md](notes/codex.md) |
-| **Masowy Refaktoring w tle** | Herdr + OpenCode | Qwen 2.5 Coder 14B / Flash | 0 / Minimalny | [herdr.md](notes/herdr.md), [opencode.md](notes/opencode.md) |
-| **Modele Lokalne (0 zł / 0 tokenów)**| Ollama / WSL | Qwen 2.5 Coder, DeepSeek R1 7B | **0 zł** | [local-models-12gb.md](notes/local-models-12gb.md) |
-| **Środowisko Uruchomieniowe**| WSL (Ubuntu/Linux) | — | — | [wsl.md](notes/wsl.md) |
+| **Zarządzanie sesjami i wątkami** | T3 Code / Herdr | — | 0 | [T3 Code](/tokensavemaxxing/tools/notes/t3-code/), [Herdr](/tokensavemaxxing/tools/notes/herdr/) |
+| **Eksploracja i Scout (czytanie)** | Antigravity / OpenCode | Gemini Flash / Haiku / Qwen 7B | Bardzo niski / 0 | [Antigravity CLI](/tokensavemaxxing/tools/notes/antigravity-cli/), [OpenCode](/tokensavemaxxing/tools/notes/opencode/) |
+| **Architektura i Planowanie** | Claude Code / T3 Code / Antigravity | Claude 3.7 Sonnet / o3-mini | Płatny (inwestycja) | [Claude Code](/tokensavemaxxing/tools/notes/claude-code/), [Codex](/tokensavemaxxing/tools/notes/codex/) |
+| **Trudna Implementacja & RCA** | Claude Code / Codex | Claude 3.7 Sonnet / o3-mini | Płatny | [Claude Code](/tokensavemaxxing/tools/notes/claude-code/), [Codex](/tokensavemaxxing/tools/notes/codex/) |
+| **Masowy Refaktoring w tle** | Herdr + OpenCode | Qwen 2.5 Coder 14B / Flash | 0 / Minimalny | [Herdr](/tokensavemaxxing/tools/notes/herdr/), [OpenCode](/tokensavemaxxing/tools/notes/opencode/) |
+| **Modele Lokalne (0 zł / 0 tokenów)**| Ollama / WSL | Qwen 2.5 Coder, DeepSeek R1 7B | **0 zł** | [Modele Lokalne 12 GB](/tokensavemaxxing/tools/notes/local-models-12gb/) |
+| **Środowisko Uruchomieniowe**| WSL (Ubuntu/Linux) | — | — | [WSL](/tokensavemaxxing/tools/notes/wsl/) |

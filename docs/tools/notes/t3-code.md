@@ -3,9 +3,6 @@ title: "Notatka Narzędziowa: T3 Code (`t3code`)"
 description: "Notatka Narzędziowa: T3 Code (`t3code`)"
 ---
 
-
-# Notatka Narzędziowa: T3 Code (`t3code`)
-
 > **Rola w ekosystemie**: Centralny panel graficzny (Control Plane GUI / ADE) integrujący wielu agentów, zarządzający wątkami w modelu skrzynki odbiorczej (Inbox) oraz izolujący gałęzie przez Git Worktrees.
 
 ---

@@ -3,9 +3,6 @@ title: "Playbook 03: tokensavemaxxing — Kompleksowa Metodologia Redukcji Zuży
 description: "Dokument bazowy oparty na sprawdzonym projekcie wdrożeniowym optymalizacji 3 powiązanych repozytoriów (`app` / `web` / `e2e`)."
 ---
 
-
-# Playbook 03: tokensavemaxxing — Kompleksowa Metodologia Redukcji Zużycia Tokenów
-
 > Dokument bazowy oparty na sprawdzonym projekcie wdrożeniowym optymalizacji 3 powiązanych repozytoriów (`app` / `web` / `e2e`).
 > Cel: Redukcja kosztów per task o 50–70%, skrócenie indeksowania o 65% i podniesienie precyzji odpowiedzi za pierwszym razem do ~95%.
 

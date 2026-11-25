@@ -1,10 +1,7 @@
 ---
 title: "Notatka Narzędziowa: WSL (Windows Subsystem for Linux)"
-description: "⚠️"
+description: "Konfiguracja WSL (Windows Subsystem for Linux) pod kątem wydajności I/O, ripgrep, git i lokalnych modeli GPU."
 ---
-
-
-# Notatka Narzędziowa: WSL (Windows Subsystem for Linux)
 
 > **Rola w ekosystemie**: Fundament środowiska uruchomieniowego — natywny linuksowy system plików, błyskawiczne operacje I/O, ripgrep, narzędzia kompilacji oraz bezpośredni dostęp do akceleracji GPU (CUDA).
 

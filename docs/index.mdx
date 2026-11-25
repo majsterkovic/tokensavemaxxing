@@ -18,6 +18,32 @@ hero:
       variant: minimal
 ---
 
+import { CardGrid, LinkCard } from '@astrojs/starlight/components';
+
+## 🗺️ Nawigacja po Bazie Wiedzy
+
+<CardGrid>
+  <LinkCard
+    title="📚 Artykuły i Badania"
+    description="13 syntez badań empirycznych (Cursor, Vercel, ETH Zürich, Spotify, Emory, Redis) o ekonomii tokenów i pruningu."
+    href="/tokensavemaxxing/articles/"
+  />
+  <LinkCard
+    title="🛠️ Katalog Narzędzi"
+    description="Claude Code, OpenCode, Antigravity, Codex, Herdr, T3 Code, RTK oraz konfiguracja modeli lokalnych (12 GB VRAM)."
+    href="/tokensavemaxxing/tools/"
+  />
+  <LinkCard
+    title="📋 Playbooki Operacyjne"
+    description="Gotowe procedury krok po kroku: feature dev, RCA, tokensavemaxxing na 3 repo, multi-repo oraz code review."
+    href="/tokensavemaxxing/playbooks/"
+  />
+  <LinkCard
+    title="🏛️ Architektura Kontekstu"
+    description="4-warstwowy model kontekstu, higiena reguł (<2000 tokenów) i wzorce izolacji subagentów."
+    href="/tokensavemaxxing/architecture/"
+  />
+</CardGrid>
 
 ## ⚡ 5 Filarów Tokensavemaxxing
 
@@ -27,4 +53,4 @@ hero:
 | **2. Pasywna Mapa Symboli (`REPO-MAP.md`)** | Deterministyczny graf eksportów i importów przez AST (~2k tok) | Zastępuje setki `read_file`, pass rate skacze do 100% |
 | **3. Czystka MCP (Tool Pruning)** | Wyłączenie nieużywanych serwerów protokołu MCP z workspace | Natychmiastowe obcięcie stałego narzutu tury o do **46.9%** |
 | **4. Dyscyplina Reguł (`<2000 tok`)** | Przejście z `alwaysApply: true` na reguły z maskami `globs` | Zapobieganie równomiernej degradacji uwagi modelu |
-| **5. Subagenty Badawcze (Scouts)** | Tani model (Flash/Haiku) z zakazem cytowania kodu (tylko wniosek + linie) | Redukcja zanieczyszczenia sesji głównej z 6k do <450 tok |
+| **5. Subagenty Badawcze (Scouts)** | Tani model (Flash/Haiku) z zakazem cytowania kodu (tylko wniosek + linie) | Redukcja zanieczyszczenia sesji głównej z 6k do `<450 tok` |

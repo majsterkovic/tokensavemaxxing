@@ -3,9 +3,6 @@ title: "Spotify: Jak wtyczka Shunt i Portal obcięły zużycie tokenów w Claude
 description: "Spotify: Jak wtyczka Shunt i Portal obcięły zużycie tokenów w Claude Code o 90%"
 ---
 
-
-# Spotify: Jak wtyczka Shunt i Portal obcięły zużycie tokenów w Claude Code o 90%
-
 Analiza studium przypadku Spotify Engineering (*"Portal by Spotify cut my Claude Code token usage by 90%"*, wrzesień 2026).
 
 ---
@@ -73,4 +70,4 @@ Spotify wykorzystało swoją wewnętrzną platformę deweloperską **Portal** (k
 
 - **Redukcja o 90%**: Wolumen tokenów wpadających do głównego okna Claude spadł o dziewięć dziesiątych w scenariuszach masowego czytania kodu.
 - **Krytyczna uwaga (z dyskusji na Hacker News)**: 90% redukcji dotyczy **kontekstu Claude**, a nie łącznego rachunku infrastrukturalnego (nadal płaci się za tokeny Flash i serwery Portal). Niemniej ze względu na 20-krotną dysproporcję cenową między Sonnet a Flash, całkowity koszt zadania spadł o ~70–75%.
-- **Potwierdzenie reguł naszego repozytorium**: Zbieżność 1:1 z naszymi playbookami [03-token-savemaxxing.md](../playbooks/03-token-savemaxxing.md) oraz [subagents-and-fanout.md](subagents-and-fanout.md) — oddzielaj I/O od myślenia architektonicznego.
+- **Potwierdzenie reguł naszego repozytorium**: Zbieżność 1:1 z naszymi playbookami [Playbook 03: tokensavemaxxing](/tokensavemaxxing/playbooks/03-token-savemaxxing/) oraz [Subagenty i Fan-Out](/tokensavemaxxing/articles/subagents-and-fanout/) — oddzielaj I/O od myślenia architektonicznego.

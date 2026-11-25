@@ -1,48 +1,33 @@
 ---
 title: "Kompendium Narzędzi Programowania Agentowego"
-description: "Kompendium Narzędzi Programowania Agentowego"
+description: "Przewodnik po stosie technologicznym: harnessy AI, notatki per-narzędzie, mapowanie AST, serwery MCP i metryki."
 ---
 
+Przewodnik po stosie technologicznym programisty pracującego z agentami AI — od harnessów i multiplekserów sesji, przez deterministyczne mapowanie kodu, po narzędzia redukcji tokenów.
 
-# Kompendium Narzędzi Programowania Agentowego
+## 🗂️ Moduły Sekcji Narzędzi
 
-Przewodnik po współczesnym stosie technologicznym (tech stack) programisty współpracującego z agentami AI: od harnessów i środowisk IDE, przez narzędzia deterministycznego mapowania repozytorium, po serwery protokołu MCP i systemy ewaluacji.
+| Moduł | Zakres |
+|---|---|
+| [Spersonalizowany Inwentarz Stosu](/tokensavemaxxing/tools/my-toolset-inventory/) | Architektura 4-warstwowa i tabela routingu zadań między narzędziami |
+| [Notatki Per-Narzędzie (13 narzędzi)](/tokensavemaxxing/tools/notes/) | Dedykowane karty: Claude Code, Codex, Antigravity, OpenCode, Herdr, T3 Code, RTK, WSL, Local 12 GB |
+| [Harnessy i IDE](/tokensavemaxxing/tools/harnesses-and-ides/) | Porównanie środowisk wykonawczych: Cursor, Claude Code, Antigravity, OpenCode |
+| [Kontekst i Mapowanie AST](/tokensavemaxxing/tools/context-and-mapping/) | Deterministyczne indeksowanie: `tree-sitter`, `gen-repo-map`, Repomix |
+| [Serwery MCP — Audyt i Pruning](/tokensavemaxxing/tools/mcp-servers/) | Zarządzanie narzutem definicji narzędzi i wycinanie zbędnych serwerów |
+| [Metryki i Ewaluacje](/tokensavemaxxing/tools/metrics-and-evals/) | Context Breakdown, śledzenie kosztów sesji i weryfikacja jakości |
 
----
+## 🧭 Szybki Wybór Środowiska
 
-## 🗂️ Struktura Sekcji Narzędzi
-
-| Moduł | Zakres | Główne technologie |
+| Narzędzie | Najlepsze zastosowanie | Kluczowa zaleta |
 |---|---|---|
-| [my-toolset-inventory.md](my-toolset-inventory.md) | **Twój spersonalizowany inwentarz narzędzi** | T3 Code, Herdr, Claude Code, Codex, Antigravity, OpenCode, WSL, Local Models (12 GB) |
-| **[notes/](notes/)** | **Dedykowane notatki per-narzędzie** | [claude-code.md](notes/claude-code.md), [codex.md](notes/codex.md), [antigravity-cli.md](notes/antigravity-cli.md), [opencode.md](notes/opencode.md), [opencode-dcp.md](notes/opencode-dcp.md), [herdr.md](notes/herdr.md), [t3-code.md](notes/t3-code.md), [openbot.md](notes/openbot.md), [wsl.md](notes/wsl.md), [local-models-12gb.md](notes/local-models-12gb.md), [rtk.md](notes/rtk.md), [token-killer-stack.md](notes/token-killer-stack.md), [superpowers-and-agent-skills.md](notes/superpowers-and-agent-skills.md) |
-| [harnesses-and-ides.md](harnesses-and-ides.md) | Środowiska wykonawcze agentów, edytory, terminale | Cursor, Claude Code, Antigravity CLI, Windsurf, Aider, OpenCode |
-| [context-and-mapping.md](context-and-mapping.md) | Deterministyczne indeksowanie i destylacja kodu | AST, tree-sitter, `gen-repo-map`, Repomix, files-to-prompt |
-| [mcp-servers.md](mcp-servers.md) | Model Context Protocol: zarządzanie i optymalizacja | GitHub MCP, Postgres MCP, Playwright, Filesystem, Audyt narzutu |
-| [metrics-and-evals.md](metrics-and-evals.md) | Monitorowanie zużycia kontekstu i weryfikacja poprawności | Context Breakdown, Langfuse, Promptfoo, test pass-rate |
+| **T3 Code** | Cockpit GUI dla wielu agentów | Inbox-style wątki, BYOK, git worktrees |
+| **Herdr** | Sesje w tle ("tmux dla agentów") | Persistence i statusy OSC 7501 |
+| **Claude Code** | Szybkie operacje CLI i git workflows | Subagenty badawcze, niski narzut UI |
+| **Antigravity (AGY)** | Złożone swarmy i Python workflows | Koordynacja subagentów, arbitraż Flash/Pro |
+| **OpenCode** | Praca TUI z modelami cloud + local | Tryby `plan`/`build`, integracja z LSP |
+| **Codex** | Trudna logika algorytmiczna i RCA | Modele reasoning (`o3-mini`, GPT-4o) |
+| **Cursor** | Edycja full-stack w IDE | Inline diffs, reguły `.cursor/rules/*.mdc` |
 
----
-
-## 🧭 Macierz Doboru Środowiska Roboczego
-
-| Narzędzie | Najlepsze zastosowanie | Model pracy | Kluczowa zaleta | Na co uważać |
-|---|---|---|---|---|
-| **T3 Code** | Cockpit GUI dla wielu agentów, praca wieloprojektowa | GUI Control Plane | Inbox-style wątki, BYOK, git worktrees | Telemetria (warto wyłączyć) |
-| **Herdr** | Wielozadaniowość terminalowa, sesje długodystansowe | TUI / Desktop Daemon | Agenci działają w tle po zamknięciu okna, statusy OSC 7501 | Narzędzie relatywnie świeże |
-| **Claude Code** | Szybkie operacje w terminalu, pipeline'y CLI, git workflows | Terminal CLI | Świetne subagenty badawcze, mały narzut UI, dostęp do powłoki | Brak podglądu diffa w GUI |
-| **Antigravity (AGY)** | Złożone przepływy multi-agent, workflow scripts, swarmy | CLI & IDE Extension | Koordynacja subagentów, skrypty w Pythonie, arbitraż Flash/Pro | Wyłączaj zbędne MCP |
-| **OpenCode** | Elastyczny TUI agent łączący modele chmurowe i lokalne | Terminal TUI | Tryby `plan`/`build`, integracja z LSP, 75+ modeli | Konfiguracja providerów |
-| **Codex** | Złożona logika matematyczna i algorytmiczna | CLI / Web | Modele reasoning (o3-mini, GPT-4o) | Koszt tokenów rozumowania |
-| **Cursor** | Kompleksowe tworzenie aplikacji, refaktoringi full-stack | IDE (fork VS Code) | Natywne inline diffs, `.cursor/rules/*.mdc` | Wyciek reguł w multi-root |
-
----
-
-## 📐 Zasada Doboru Narzędzi: "Determinizm przed LLM"
-
-Złota zasada inżynierii agentowej głosi:
-> **Nigdy nie płać tokenami modelu za to, co można obliczyć deterministycznym skryptem w 10 milisekund.**
-
-- Generowanie mapy eksportów -> **AST / tree-sitter (skrypt Python)**, nie prompt do LLM.
-- Formatowanie kodu -> **Prettier / Ruff**, nie reguła w pliku `.mdc`.
-- Sprawdzanie typów -> **tsc / mypy**, nie model frontier.
-- Weryfikacja składni -> **Linter**, nie "sprawdź czy nie ma literówek".
+:::tip[Złota zasada: Determinizm przed LLM]
+**Nigdy nie płać tokenami modelu za to, co można policzyć skryptem w 10 ms.** Mapę eksportów generuj przez AST (`gen-repo-map.py`), formatowanie przez Prettier/Ruff, a typy przez `tsc`/`mypy`.
+:::

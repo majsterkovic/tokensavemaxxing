@@ -3,9 +3,6 @@ title: "Ekosystem Agent Skills w 2026: Standard `SKILL.md`, Superpowers i Katalo
 description: "Ekosystem Agent Skills w 2026: Standard `SKILL.md`, Superpowers i Katalogi"
 ---
 
-
-# Ekosystem Agent Skills w 2026: Standard `SKILL.md`, Superpowers i Katalogi
-
 Przewodnik po otwartym standardzie **Agent Skills** (`agentskills.io`), najpopularniejszych paczkach społecznościowych oraz ich wpływie na budżet tokenowy.
 
 ---

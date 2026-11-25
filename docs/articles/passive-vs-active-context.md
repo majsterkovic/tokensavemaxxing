@@ -3,9 +3,6 @@ title: "Pasywny Kontekst vs Dynamiczne Narzędzia (Ewaluacja Vercel)"
 description: "Pasywny Kontekst vs Dynamiczne Narzędzia (Ewaluacja Vercel)"
 ---
 
-
-# Pasywny Kontekst vs Dynamiczne Narzędzia (Ewaluacja Vercel)
-
 Analiza oficjalnego badania inżynierów Vercel (styczeń 2026) nad skutecznością agentów AI w projektach z nowym API Next.js 16 oraz powiązanej dyskusji na Hacker News (wątek #46809708).
 
 ---

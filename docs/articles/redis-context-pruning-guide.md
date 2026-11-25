@@ -3,9 +3,6 @@ title: "Redis: Pruning Kontekstu a 'Context Rot' i Cache Semantyczny"
 description: "Redis: Pruning Kontekstu a 'Context Rot' i Cache Semantyczny"
 ---
 
-
-# Redis: Pruning Kontekstu a "Context Rot" i Cache Semantyczny
-
 Analiza publikacji inżynierskiej Redis (*"Context Pruning: Cut LLM Tokens Without Losing Quality"*, 2026).
 
 ---

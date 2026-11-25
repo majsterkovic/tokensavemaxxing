@@ -3,9 +3,6 @@ title: "Playbook 05: Bezpieczny Refaktoring i Zautomatyzowany Code Review"
 description: "Playbook 05: Bezpieczny Refaktoring i Zautomatyzowany Code Review"
 ---
 
-
-# Playbook 05: Bezpieczny Refaktoring i Zautomatyzowany Code Review
-
 Procedura przeprowadzania dużych zmian strukturalnych kodu oraz audytu pull requestów przy pomocy bezstronnego subagenta recenzenta.
 
 ---
