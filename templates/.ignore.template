@@ -1,0 +1,12 @@
+# Szablon .ignore (dla ripgrep / agent glob w roocie nadrzędnym)
+node_modules/
+.venv/
+dist/
+build/
+.next/
+.turbo/
+*.generated.*
+coverage/
+package-lock.json
+pnpm-lock.yaml
+yarn.lock

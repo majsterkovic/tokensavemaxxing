@@ -1,0 +1,54 @@
+# Szablon .cursorignore — Ochrona indeksu i oszczędność tokenów
+
+# Zależności zewnętrzne
+node_modules/
+vendor/
+.pnp/
+.pnp.js
+
+# Środowiska wirtualne Python
+.venv/
+env/
+venv/
+__pycache__/
+*.pyc
+
+# Artefakty buildu i kompilacji
+**/dist/
+**/build/
+**/.next/
+**/out/
+**/.turbo/
+**/coverage/
+**/.cache/
+
+# Kod generowany — eliminacja uczenia się agenta na generowanych plikach
+**/*.generated.ts
+**/*.generated.js
+**/__generated__/
+**/prisma/generated/
+**/graphql/generated/
+
+# Lockfile'y (ogromne, rzadko potrzebne modelowi)
+package-lock.json
+pnpm-lock.yaml
+yarn.lock
+poetry.lock
+
+# Binaria i mapy źródeł
+**/*.map
+**/*.min.js
+**/*.min.css
+**/*.bundle.js
+**/*.wasm
+
+# Dane testowe, snapshoty i multimedia
+**/__snapshots__/
+**/fixtures/large/
+**/cypress/videos/
+**/cypress/screenshots/
+**/*.mp4
+**/*.pdf
+**/*.png
+**/*.jpg
+**/*.zip

@@ -1,0 +1,22 @@
+# AGENTS.md — Skrócony Kontrakt i Indeks Bazy Kodu
+
+> Plik ładowany do pasywnego kontekstu agenta (~8KB). Zastępuje dynamiczne błądzenie po repozytorium.
+
+## Komendy Deweloperskie
+- Build: `pnpm build`
+- Test: `pnpm test`
+- Test pojedynczy: `pnpm test <sciezka-do-pliku>`
+- Lint & Typecheck: `pnpm lint && pnpm typecheck`
+
+## Standardy Architektury
+- `src/api/` — Handlery żądań HTTP / TRPC. Tylko walidacja wejścia (Zod) i delegacja do serwisów.
+- `src/services/` — Czysta logika biznesowa, niezależna od protokołu transportowego.
+- `src/db/` — Schematy bazy danych i zapytania repozytoriów.
+- Obsługa błędów: Wszystkie funkcje serwisowe zwracają typ `Result<T, AppError>`.
+
+## Skrócona Mapa Symboli (Generowana przez scripts/gen-repo-map.py)
+```text
+src/api/auth/session.ts | exports: createSession, verifySession | kind: route-handler
+src/services/billing.ts | exports: calculateInvoice, processPayment | kind: service
+src/db/client.ts        | exports: db, pool | kind: database
+```
