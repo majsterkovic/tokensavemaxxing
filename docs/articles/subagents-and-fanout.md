@@ -1,3 +1,9 @@
+---
+title: "Subagenty, Fan-Out i Izolacja Kontekstu Badawczego"
+description: "⚠️"
+---
+
+
 # Subagenty, Fan-Out i Izolacja Kontekstu Badawczego
 
 Analiza wzorców architektonicznych orkiestracji subagentów w nowoczesnych harnessach deweloperskich (Claude Code 2.1+, Google Antigravity Swarm, Cursor Subagents).

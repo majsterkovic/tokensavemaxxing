@@ -1,3 +1,9 @@
+---
+title: "Dynamic Context Pruning (DCP): Fundament Teoretyczny (arXiv:2305.15805)"
+description: "Dynamic Context Pruning (DCP): Fundament Teoretyczny (arXiv:2305.15805)"
+---
+
+
 # Dynamic Context Pruning (DCP): Fundament Teoretyczny (arXiv:2305.15805)
 
 Szczegółowa analiza przełomowej pracy naukowej:

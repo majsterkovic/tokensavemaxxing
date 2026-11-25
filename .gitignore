@@ -10,4 +10,6 @@ __pycache__/
 .vscode/
 dist/
 build/
+.astro/
+node_modules/
 *.tmp

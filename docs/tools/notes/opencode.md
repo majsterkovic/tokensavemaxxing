@@ -1,3 +1,9 @@
+---
+title: "Notatka Narzędziowa: OpenCode (`anomalyco/opencode`)"
+description: "Notatka Narzędziowa: OpenCode (`anomalyco/opencode`)"
+---
+
+
 # Notatka Narzędziowa: OpenCode (`anomalyco/opencode`)
 
 > **Rola w ekosystemie**: Wszechstronny, otwartoźródłowy agent TUI/CLI integrujący ponad 75 dostawców LLM, z natywnym wsparciem dla modeli lokalnych i Language Server Protocol (LSP).

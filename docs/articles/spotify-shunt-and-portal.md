@@ -1,3 +1,9 @@
+---
+title: "Spotify: Jak wtyczka Shunt i Portal obcięły zużycie tokenów w Claude Code o 90%"
+description: "Spotify: Jak wtyczka Shunt i Portal obcięły zużycie tokenów w Claude Code o 90%"
+---
+
+
 # Spotify: Jak wtyczka Shunt i Portal obcięły zużycie tokenów w Claude Code o 90%
 
 Analiza studium przypadku Spotify Engineering (*"Portal by Spotify cut my Claude Code token usage by 90%"*, wrzesień 2026).

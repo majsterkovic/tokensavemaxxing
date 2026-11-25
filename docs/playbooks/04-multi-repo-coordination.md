@@ -1,3 +1,9 @@
+---
+title: "Playbook 04: Koordynacja Pracy w Multi-Repo (`app` / `web` / `e2e`)"
+description: "Playbook 04: Koordynacja Pracy w Multi-Repo (`app` / `web` / `e2e`)"
+---
+
+
 # Playbook 04: Koordynacja Pracy w Multi-Repo (`app` / `web` / `e2e`)
 
 Zasady i wzorce organizacji pracy z agentami AI w projektach podzielonych na kilka powiązanych repozytoriów gitowych.

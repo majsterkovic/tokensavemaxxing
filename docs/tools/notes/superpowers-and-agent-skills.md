@@ -1,3 +1,9 @@
+---
+title: "Notatka Narzędziowa: `obra/superpowers` i Złoty Zestaw Skilli"
+description: "Notatka Narzędziowa: `obra/superpowers` i Złoty Zestaw Skilli"
+---
+
+
 # Notatka Narzędziowa: `obra/superpowers` i Złoty Zestaw Skilli
 
 > **Rola w ekosystemie**: Kanoniczny zestaw umiejętności agentowych narzucający rygor inżynieryjny (TDD, planowanie, izolacja subagentów, git worktrees) oraz procedury bezpiecznego kodowania.

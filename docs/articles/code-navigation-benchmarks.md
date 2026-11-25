@@ -1,3 +1,9 @@
+---
+title: "Benchmarki Nawigacji po Repozytorium: Grep vs AST vs LSP vs Code Graph"
+description: "Benchmarki Nawigacji po Repozytorium: Grep vs AST vs LSP vs Code Graph"
+---
+
+
 # Benchmarki Nawigacji po Repozytorium: Grep vs AST vs LSP vs Code Graph
 
 Kompleksowa synteza badań empirycznych (m.in. arXiv:2608.13568v1, ast-grep, Repowise, Antão Almada, Reddit r/ClaudeCode) dotyczących optymalizacji przeszukiwania kodu w pętli agenta.

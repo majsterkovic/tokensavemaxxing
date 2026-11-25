@@ -1,3 +1,9 @@
+---
+title: "Notatka Narzędziowa: Google Antigravity CLI (`agy`)"
+description: "Notatka Narzędziowa: Google Antigravity CLI (`agy`)"
+---
+
+
 # Notatka Narzędziowa: Google Antigravity CLI (`agy`)
 
 > **Rola w ekosystemie**: Silnik orkiestracji zaawansowanych potoków (workflows), rojów agentów (`swarm`), rozbudowanych subagentów i arbitrażu modeli Flash vs Pro.

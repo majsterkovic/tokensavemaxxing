@@ -1,3 +1,9 @@
+---
+title: "Kompendium: Ekosystem 4 Narzędzi Redukcji Tokenów (RTK, Context Mode, Ponytail, Caveman)"
+description: "Kompendium: Ekosystem 4 Narzędzi Redukcji Tokenów (RTK, Context Mode, Ponytail, Caveman)"
+---
+
+
 # Kompendium: Ekosystem 4 Narzędzi Redukcji Tokenów (RTK, Context Mode, Ponytail, Caveman)
 
 Szczegółowy przegląd nowoczesnego stosu FinOps dla programowania agentowego (opisanego m.in. w DataCamp i analizach Floriana Bruniaux).

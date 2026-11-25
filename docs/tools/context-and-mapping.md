@@ -1,3 +1,9 @@
+---
+title: "Narzędzia Mapowania Bazy Kodu i Inżynierii Kontekstu"
+description: "Narzędzia Mapowania Bazy Kodu i Inżynierii Kontekstu"
+---
+
+
 # Narzędzia Mapowania Bazy Kodu i Inżynierii Kontekstu
 
 Zestawienie deterministycznych narzędzi do ekstrakcji wiedzy o architekturze, grafach zależności i symbolach bez marnowania tokenów modeli LLM.

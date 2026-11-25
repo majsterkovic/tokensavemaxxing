@@ -1,3 +1,9 @@
+---
+title: "Playbook 01: Implementacja Nowej Funkcjonalności (Spec-First)"
+description: "Playbook 01: Implementacja Nowej Funkcjonalności (Spec-First)"
+---
+
+
 # Playbook 01: Implementacja Nowej Funkcjonalności (Spec-First)
 
 Ustrukturyzowany proces tworzenia nowej funkcjonalności od specyfikacji technicznej do zweryfikowanego kodu z minimalnym zużyciem tokenów.

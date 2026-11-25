@@ -1,3 +1,9 @@
+---
+title: "Inwentarz Narzędzi — Kompletny Stos Technologiczny"
+description: "⚠️"
+---
+
+
 # Inwentarz Narzędzi — Kompletny Stos Technologiczny
 
 Szczegółowy przegląd i charakterystyka wszystkich narzędzi dostępnych w Twoim środowisku deweloperskim, wraz z przypisaniem ról w architekturze **tokensavemaxxing**.

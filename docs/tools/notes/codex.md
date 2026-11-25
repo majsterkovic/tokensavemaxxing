@@ -1,3 +1,9 @@
+---
+title: "Notatka Narzędziowa: OpenAI Codex / Reasoning Models (o3-mini, GPT-4o)"
+description: "Notatka Narzędziowa: OpenAI Codex / Reasoning Models (o3-mini, GPT-4o)"
+---
+
+
 # Notatka Narzędziowa: OpenAI Codex / Reasoning Models (o3-mini, GPT-4o)
 
 > **Rola w ekosystemie**: Rozwiązywanie trudnych zagadek algorytmicznych, zawiłych maszyn stanów, parsowania AST oraz audyt matematyczno-logiczny kodu.

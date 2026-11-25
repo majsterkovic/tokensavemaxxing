@@ -1,3 +1,9 @@
+---
+title: "Notatka Narzędziowa: Modele Lokalne w Środowisku 12 GB VRAM"
+description: "Notatka Narzędziowa: Modele Lokalne w Środowisku 12 GB VRAM"
+---
+
+
 # Notatka Narzędziowa: Modele Lokalne w Środowisku 12 GB VRAM
 
 > **Rola w ekosystemie**: Zerowy koszt tokenowy (0 zł / 0 limitów API). Idealna warstwa do wstępnego planowania ("Thinking Mini"), generowania testów jednostkowych, lokalnego formatowania oraz asystowania w OpenCode.

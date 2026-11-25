@@ -1,3 +1,9 @@
+---
+title: "Strategie Kontekstu w Monorepo i Multi-Repo"
+description: "Strategie Kontekstu w Monorepo i Multi-Repo"
+---
+
+
 # Strategie Kontekstu w Monorepo i Multi-Repo
 
 Synteza analiz inżynierskich: Ivan Magda ("Fixing 40k CLAUDE.md warning in monorepo"), Matthew Wong ("Context engineering in monorepo AI agents") oraz wątków forum Cursora dotyczących środowisk multi-root.

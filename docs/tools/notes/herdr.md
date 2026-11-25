@@ -1,3 +1,9 @@
+---
+title: "Notatka Narzędziowa: Herdr (`herdrdev`)"
+description: "Notatka Narzędziowa: Herdr (`herdrdev`)"
+---
+
+
 # Notatka Narzędziowa: Herdr (`herdrdev`)
 
 > **Rola w ekosystemie**: Multiplekser terminalowy i demon tła ("tmux dla agentów AI"), gwarantujący nieprzerwaną pracę procesów agentowych przy zerwaniu połączenia, uśpieniu systemu lub restarcie okna.

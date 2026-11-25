@@ -1,3 +1,9 @@
+---
+title: "Notatka Narzędziowa: Dynamic Context Pruning (`Tarquinen/opencode-dynamic-context-pruning`)"
+description: "Notatka Narzędziowa: Dynamic Context Pruning (`Tarquinen/opencode-dynamic-context-pruning`)"
+---
+
+
 # Notatka Narzędziowa: Dynamic Context Pruning (`Tarquinen/opencode-dynamic-context-pruning`)
 
 > **Rola w ekosystemie**: Wtyczka do OpenCode (`@tarquinen/opencode-dcp`), która w locie (w locie przed wysłaniem do LLM) usuwa martwe i powtarzające się fragmenty historii bez niszczenia logów sesji na dysku.

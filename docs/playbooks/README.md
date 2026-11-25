@@ -1,3 +1,9 @@
+---
+title: "Receptury Operacyjne i Playbooki (Flows)"
+description: "Receptury Operacyjne i Playbooki (Flows)"
+---
+
+
 # Receptury Operacyjne i Playbooki (Flows)
 
 Zbiór ustandaryzowanych, powtarzalnych procedur pracy z agentami AI dla typowych scenariuszy inżynierii oprogramowania.

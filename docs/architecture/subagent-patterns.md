@@ -1,3 +1,9 @@
+---
+title: "Wzorce Projektowe Subagentów (Subagent Design Patterns)"
+description: "Wzorce Projektowe Subagentów (Subagent Design Patterns)"
+---
+
+
 # Wzorce Projektowe Subagentów (Subagent Design Patterns)
 
 Katalog sprawdzonych wzorców koordynacji i delegowania pracy pomiędzy agentem głównym (orkiestratorem) a agentami pomocniczymi.

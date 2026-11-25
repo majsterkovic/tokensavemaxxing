@@ -1,3 +1,9 @@
+---
+title: "Serwery MCP (Model Context Protocol) i Zarządzanie Narzutem"
+description: "Serwery MCP (Model Context Protocol) i Zarządzanie Narzutem"
+---
+
+
 # Serwery MCP (Model Context Protocol) i Zarządzanie Narzutem
 
 Kompleksowy przewodnik po konfiguracji serwerów Model Context Protocol (MCP) z zachowaniem ścisłej dyscypliny budżetu tokenowego.

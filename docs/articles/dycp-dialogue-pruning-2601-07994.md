@@ -1,3 +1,9 @@
+---
+title: "DYCP: Dynamiczny Pruning Dialogów z Algorytmem Kadane'a (arXiv:2601.07994)"
+description: "DYCP: Dynamiczny Pruning Dialogów z Algorytmem Kadane'a (arXiv:2601.07994)"
+---
+
+
 # DYCP: Dynamiczny Pruning Dialogów z Algorytmem Kadane'a (arXiv:2601.07994)
 
 Analiza techniczna publikacji naukowej:

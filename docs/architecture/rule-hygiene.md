@@ -1,3 +1,9 @@
+---
+title: "Higiena i Dyscyplina Reguł (Rule Hygiene)"
+description: "Higiena i Dyscyplina Reguł (Rule Hygiene)"
+---
+
+
 # Higiena i Dyscyplina Reguł (Rule Hygiene)
 
 Zasady tworzenia, utrzymania i czyszczenia reguł dla modeli językowych, aby uniknąć degradacji uwagi i efektu "Rule Bloat".

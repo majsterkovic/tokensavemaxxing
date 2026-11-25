@@ -1,3 +1,9 @@
+---
+title: "Wzorce Architektoniczne Kontekstu i Promptów"
+description: "Wzorce Architektoniczne Kontekstu i Promptów"
+---
+
+
 # Wzorce Architektoniczne Kontekstu i Promptów
 
 Architektura warstwowa, zarządzanie pamięcią modelu oraz wzorce orkiestracji subagentów.

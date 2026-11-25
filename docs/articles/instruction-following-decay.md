@@ -1,3 +1,9 @@
+---
+title: "Równomierna Degradacja Jakości Instrukcji (Badania HumanLayer)"
+description: "Równomierna Degradacja Jakości Instrukcji (Badania HumanLayer)"
+---
+
+
 # Równomierna Degradacja Jakości Instrukcji (Badania HumanLayer)
 
 Analiza badań laboratoryjnych przeprowadzonych przez HumanLayer (2026) nad zachowaniem modeli frontier (Claude 3.5/3.7 Sonnet, GPT-4o, Gemini 1.5/2.0 Pro) przy rosnącym wolumenie instrukcji systemowych i reguł workspace.

@@ -1,3 +1,9 @@
+---
+title: "Analiza Architektury: Inkling 2 Mini (Thinking Machines Lab)"
+description: "Analiza Architektury: Inkling 2 Mini (Thinking Machines Lab)"
+---
+
+
 # Analiza Architektury: Inkling 2 Mini (Thinking Machines Lab)
 
 Analiza techniczna przełomowego modelu otwartego **Inkling 2 Mini**, wydanego 20 listopada 2026 r. przez laboratorium **Thinking Machines Lab** (założone przez byłą CTO OpenAI, Mirę Murati).

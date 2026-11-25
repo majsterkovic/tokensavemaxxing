@@ -1,3 +1,9 @@
+---
+title: "Kompendium Narzędzi Programowania Agentowego"
+description: "Kompendium Narzędzi Programowania Agentowego"
+---
+
+
 # Kompendium Narzędzi Programowania Agentowego
 
 Przewodnik po współczesnym stosie technologicznym (tech stack) programisty współpracującego z agentami AI: od harnessów i środowisk IDE, przez narzędzia deterministycznego mapowania repozytorium, po serwery protokołu MCP i systemy ewaluacji.

@@ -1,3 +1,9 @@
+---
+title: "Baza Wiedzy — Artykuły, Badania i Publikacje"
+description: "Baza Wiedzy — Artykuły, Badania i Publikacje"
+---
+
+
 # Baza Wiedzy — Artykuły, Badania i Publikacje
 
 Zbiór syntez najważniejszych badań empirycznych, postów technicznych twórców harnessów (Cursor, Anthropic, Google, Vercel) oraz analiz inżynierii kontekstu w programowaniu agentowym.

@@ -1,0 +1,27 @@
+{
+  "name": "tokensavemaxxing",
+  "version": "1.0.0",
+  "description": "Maksymalna efektywność kodu agentowego przy minimalnym zużyciu tokenów i zerowym szumie kontekstowym.",
+  "type": "module",
+  "scripts": {
+    "dev": "astro dev",
+    "start": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview"
+  },
+  "keywords": [
+    "agentic-ai",
+    "context-engineering",
+    "token-optimization",
+    "claude-code",
+    "cursor",
+    "opencode"
+  ],
+  "author": "majsterkovic",
+  "license": "MIT",
+  "dependencies": {
+    "@astrojs/starlight": "^0.43.1",
+    "astro": "^7.4.13",
+    "sharp": "^0.34.0"
+  }
+}

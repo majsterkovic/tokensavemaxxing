@@ -1,3 +1,9 @@
+---
+title: "Notatka Narzędziowa: OpenBot"
+description: "Notatka Narzędziowa: OpenBot"
+---
+
+
 # Notatka Narzędziowa: OpenBot
 
 > **Rola w ekosystemie**: Otwarta, lokalna platforma robocza (Agent Workspace) do koordynowania autonomicznych agentów w izolowanych środowiskach (sandboxes).
