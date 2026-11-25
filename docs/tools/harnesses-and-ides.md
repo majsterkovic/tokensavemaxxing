@@ -1,62 +1,78 @@
-# Środowiska Wykonawcze i Harnessy (Cursor, Claude Code, AGY, Windsurf, Aider)
+# Środowiska Wykonawcze i Harnessy
 
-Szczegółowy przegląd najpopularniejszych harnessów programistycznych pod kątem zarządzania kontekstem, zachowania pamięci podręcznej i podatności na błędy optymalizacji.
-
----
-
-## 1. Cursor (IDE)
-
-### Profil i Architektura
-- **Typ**: Fork VS Code z głęboką integracją modeli frontier (Claude 3.7 Sonnet, GPT-4o, Gemini 2.0 Pro).
-- **Format reguł**: `.cursor/rules/*.mdc` (zawiera frontmatter YAML: `description`, `globs`, `alwaysApply`).
-- **Mechanizm indeksowania**: Wektorowy indeks codebase + ripgrep grep/glob + symbol provider.
-
-### Dobre praktyki w Cursorze:
-1. **Unikaj starego `.cursorrules`**: W trybie Agent plik `.cursorrules` w roocie jest po cichu ignorowany. Używaj wyłącznie `.cursor/rules/*.mdc`.
-2. **Używaj `globs` zamiast `alwaysApply: true`**: Trzymaj w `alwaysApply: true` tylko `00-repo.mdc` (~15 linii) oraz `10-efficiency.mdc` (~10 linii). Reszta reguł (np. React, TypeScript, SQL, testy) powinna posiadać maskę `globs: ["**/*.tsx"]`.
-3. **Pomiary przez Context Usage Breakdown**: Narzędzie wprowadzone w Cursorze 3.3+ pozwala zobaczyć dokładny rozkład tokenów: ile zabierają reguły, ile pliki, a ile schematy MCP.
-
-### Znane pułapki:
-- **Błąd multi-root (155477)**: Otwarcie kilku repozytoriów w jednym workspace powoduje wyciek reguł `alwaysApply: true` ze wszystkich projektów do każdej sesji.
-- **Błąd zagnieżdżonych `AGENTS.md` (3.6 - 3.10)**: Automatyczne wciąganie plików `AGENTS.md` ze wszystkich podfolderów jako Always-Applied.
-- **Bug ignorowania w non-git root**: Gdy folder nadrzędny nie ma `.git`, wyszukiwanie glob potrafi zignorować `.gitignore` i indeksować gigabajty `node_modules`.
+Szczegółowy przegląd najpopularniejszych harnessów i platform agentowych pod kątem zarządzania kontekstem, zachowania pamięci podręcznej i integracji w ekosystemie deweloperskim.
 
 ---
 
-## 2. Claude Code (Terminal CLI)
+## 1. T3 Code (`t3code`) — Unified Agentic Development Environment
 
-### Profil i Architektura
-- **Typ**: Oficjalne narzędzie CLI od Anthropic, działające bezpośrednio w terminalu systemowym.
-- **Format reguł**: `CLAUDE.md` w roocie repozytorium (oraz zagnieżdżone `CLAUDE.md` w podfolderach).
-- **Zarządzanie agentami**: Wbudowana obsługa subagentów badawczych z własnym oknem kontekstowym.
-
-### Dobre praktyki w Claude Code:
-1. **Kompaktowy `CLAUDE.md`**: Claude Code ostrzega przed zbyt dużym plikiem (`40k CLAUDE.md warning`). Plik nie powinien przekraczać 100-150 linii zwięzłych poleceń kompilacji, testów i standardów formatowania.
-2. **Agresywne użycie subagentów**: Zlecanie zadań przeszukiwania kodu subagentom read-only zmniejsza rozmiar historii czatu z tysięcy tokenów do zwięzłego podsumowania.
-3. **Plik `.claudeignore`**: Warto zdefiniować wykluczenia dla snapshotów i danych testowych.
+- **Twórca**: Theo Browne (`t3dotgg`) / Ping Labs.
+- **Rola**: Centralna warstwa kontrolna (Control Plane GUI) integrująca pod jednym dachem Claude Code, Codex, Antigravity, Cursor i OpenCode.
+- **Kluczowe właściwości**:
+  - Zarządzanie zadaniami w modelu skrzynki pocztowej (Inbox).
+  - Wbudowane wsparcie dla Git Worktrees — możliwość równoległego uruchamiania 3 agentów na 3 różnych gałęziach bez kolizji w jednym repozytorium.
+  - BYOK (Bring Your Own Key) — brak pośredników w rozliczaniu tokenów.
+  - Lekki backend serwerowy umożliwiający kontrolę procesów z poziomu przeglądarki lub aplikacji mobilnej.
 
 ---
 
-## 3. Google Antigravity (AGY CLI / Swarm)
+## 2. Herdr (`herdr-core`, `herdr-app`) — Multiplexer z Demonem w Tle
 
-### Profil i Architektura
-- **Typ**: Zaawansowany harness agentowy obsługujący pojedyncze agenty, wyspecjalizowane subagenty oraz dynamiczne skrypty workflow (`run_workflow` w Pythonie) i roje (`swarm`).
-- **Zarządzanie regułami**: Skills wbudowane oraz specyficzne dla projektu, pliki kontekstowe i instrukcje systemowe.
-- **Narzędzia**: Bogaty zestaw wbudowanych narzędzi (bash, edycja wieloplikowa, subagenty z arbitrażem modeli: Flash vs Pro).
-
-### Dobre praktyki w Antigravity:
-1. **Arbitraż modeli (Flash vs Pro)**: Delegowanie researchu i skanowania do subagentów na modelu `flash` lub `flash_lite`, a zadań architektonicznych i zmian krytycznych do modelu `pro` / `inherit`.
-2. **Dyscyplina wsadowa (Batching)**: Wymóg wykonywania niezależnych operacji `read_file` i `write_file` równolegle w jednej turze, co oszczędza tury i czas round-trip.
-3. **Brak pętli odpytywania (No polling)**: Reaktywny system powiadomień oparty na taskach tła i kolejce wiadomości.
+- **Organizacja**: `herdrdev`.
+- **Rola**: Odpowiednik `tmux` zaprojektowany od podstaw dla agentów AI ("tmux built for coding agents").
+- **Kluczowe właściwości**:
+  - **Trwałość sesji (Session Persistence)**: Procesy agentów żyją w tle w demonie `herdr-core` (`hc`). Odłączenie SSH, restart GUI lub uśpienie systemu nie przerywa pracy agenta.
+  - **Protokół OSC 7501**: Śledzenie stanów agenta (*working*, *idle*, *blocked*, *done*).
+  - **Praca rozproszona**: Zarządzanie agentami działającymi lokalnie na maszynie oraz zdalnie na serwerach/VPS.
 
 ---
 
-## 4. Aider & Windsurf
+## 3. OpenCode (`anomalyco/opencode`) — Elastyczny Agent TUI
 
-### Aider
-- **Mocna strona**: Genialna, deterministyczna mapa repozytorium (`ctags / tree-sitter repo-map`), wstrzykiwana bezpośrednio do promptu przy minimalnym koszcie tokenów (~1024 tokeny).
-- **Ograniczenie**: Przeznaczony głównie do pracy pojedynczego dewelopera w terminalu; brak wbudowanej zaawansowanej orkiestracji subagentów.
+- **Rola**: Otwarty terminalowy agent programistyczny wspierający ponad 75 dostawców LLM (w tym modele lokalne przez Ollama/LM Studio).
+- **Kluczowe właściwości**:
+  - **Tryb `plan` vs `build`**: Pozwala precyzyjnie rozdzielić fazę architektoniczną (read-only) od fazy modyfikacji kodu.
+  - **LSP Diagnostics**: Bezpośredni odczyt błędów i sygnatur typów z serwerów językowych (Language Server Protocol), eliminujący konieczność zgadywania przez model.
+  - **GitHub Actions Integration**: Komendy `opencode github install / run` do automatyzacji CI/CD.
 
-### Windsurf (Codeium)
-- **Mocna strona**: Architektura "Cascade", łącząca głęboką analizę przepływu sterowania w kodzie z możliwością pracy agentowej w panelu bocznym.
-- **Format reguł**: Reguły globalne i per-workspace, zbliżone koncepcyjnie do `.cursorrules`.
+---
+
+## 4. Antigravity CLI (`agy`) — Orkiestracja Rojów i Dynamiczne Skrypty
+
+- **Twórca**: Google DeepMind.
+- **Rola**: Zaawansowany harness agentowy wspierający pojedyncze agenty, wyspecjalizowane subagenty oraz dynamiczne skrypty workflow w Pythonie (`run_workflow`) i roje (`swarm`).
+- **Kluczowe właściwości**:
+  - **Arbitraż Flash vs Pro**: Skanowanie kodu i ekstrakcja wiedzy przez tanie subagenty Flash, decyzje architektoniczne przez modele Pro.
+  - **Reactive Wakeup**: Reaktywny system komunikatów bez marnowania zasobów na pętle odpytywania (no polling).
+
+---
+
+## 5. Claude Code — Terminal CLI od Anthropic
+
+- **Rola**: Oficjalne narzędzie konsolowe Anthropic zintegrowane z modelami Claude 3.7 Sonnet i Claude 3.5 Haiku.
+- **Kluczowe właściwości**:
+  - Znakomite rozumowanie przy skomplikowanym refaktoringu.
+  - Wbudowana obsługa subagentów badawczych z odrębnym oknem kontekstowym.
+  - Konfiguracja przez zwięzły plik `CLAUDE.md`.
+
+---
+
+## 6. OpenAI Codex / CLI — Narzędzia Rozumujące
+
+- **Rola**: Dedykowane interfejsy i modele rozumujące OpenAI (o3-mini, GPT-4o).
+- **Kluczowe właściwości**:
+  - Znakomita precyzja w skomplikowanych algorytmach, logice biznesowej i analizie matematycznej.
+  - Modele serii "o" generują ukryte łańcuchy myślowe (reasoning tokens), co podnosi skuteczność w trudnych zadaniach architektonicznych.
+
+---
+
+## 7. Środowisko WSL i Modele Lokalne (12 GB VRAM)
+
+- **WSL (Windows Subsystem for Linux)**:
+  - Zapewnia natywne środowisko POSIX dla wszystkich agentów CLI (ripgrep, git, Python, bash).
+  - **Zasada wydajności**: Projekty muszą znajdować się w systemie linuksowym (`/home/mariusz/...`), a nie pod montowaniem `/mnt/c/`.
+- **Modele Lokalne (Ollama / vLLM w WSL)**:
+  - Karta 12 GB VRAM pozwala na lokalne uruchomienie modeli:
+    - **Qwen 2.5 Coder 7B (Q8)** / **14B (Q4_K_M)** — kodowanie bez opłat API.
+    - **DeepSeek-R1-Distill-Qwen-7B** — lokalne planowanie ("Thinking Mini").
+  - Zapewniają **zerowy koszt tokenowy** w fazie wstępnej analizy, generowania testów jednostkowych i lokalnego formatowania.

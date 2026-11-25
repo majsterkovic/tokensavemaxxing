@@ -8,6 +8,7 @@ Przewodnik po współczesnym stosie technologicznym (tech stack) programisty wsp
 
 | Moduł | Zakres | Główne technologie |
 |---|---|---|
+| [my-toolset-inventory.md](my-toolset-inventory.md) | **Twój spersonalizowany inwentarz narzędzi** | T3 Code, Herdr, Claude Code, Codex, Antigravity, OpenCode, WSL, Local Models (12 GB) |
 | [harnesses-and-ides.md](harnesses-and-ides.md) | Środowiska wykonawcze agentów, edytory, terminale | Cursor, Claude Code, Antigravity CLI, Windsurf, Aider, OpenCode |
 | [context-and-mapping.md](context-and-mapping.md) | Deterministyczne indeksowanie i destylacja kodu | AST, tree-sitter, `gen-repo-map`, Repomix, files-to-prompt |
 | [mcp-servers.md](mcp-servers.md) | Model Context Protocol: zarządzanie i optymalizacja | GitHub MCP, Postgres MCP, Playwright, Filesystem, Audyt narzutu |
@@ -19,11 +20,13 @@ Przewodnik po współczesnym stosie technologicznym (tech stack) programisty wsp
 
 | Narzędzie | Najlepsze zastosowanie | Model pracy | Kluczowa zaleta | Na co uważać |
 |---|---|---|---|---|
-| **Cursor** | Kompleksowe tworzenie aplikacji, refaktoringi full-stack, UI | IDE (fork VS Code) | Natywna integracja z edytorem, `.cursor/rules/*.mdc`, inline diffs | Wyciek reguł w multi-root, bugi ładowania `AGENTS.md` |
-| **Claude Code** | Szybkie operacje w terminalu, pipeline'y CLI, git workflows | Terminal CLI | Świetne subagenty badawcze, mały narzut UI, bezpośredni dostęp do powłoki | Brak natywnego podglądu diffa przed zatwierdzeniem w UI |
-| **Antigravity (AGY)** | Złożone przepływy multi-agent, workflow scripts, swarmy | CLI & IDE Extension | Koordynacja subagentów (`invoke_subagent`), workflow scripts w Pythonie, MCP | Wymaga dyscypliny w zamykaniu zbędnych narzędzi |
-| **Aider** | Czysty terminal, git-native commits, repo-mapping | Terminal CLI | Automatyczne tworzenie precyzyjnych commitów gita, wbudowany ctag-repomap | Mniej elastyczny w obsłudze wieloetapowych zadań subagentowych |
-| **Windsurf** | Środowisko z kaskadową pamięcią ("Cascade") | IDE | Śledzenie stanu i kroków procesu w panelu bocznym | Mniejsza społeczność tworząca reguły i szablony niż w Cursorze |
+| **T3 Code** | Cockpit GUI dla wielu agentów, praca wieloprojektowa | GUI Control Plane | Inbox-style wątki, BYOK, git worktrees | Telemetria (warto wyłączyć) |
+| **Herdr** | Wielozadaniowość terminalowa, sesje długodystansowe | TUI / Desktop Daemon | Agenci działają w tle po zamknięciu okna, statusy OSC 7501 | Narzędzie relatywnie świeże |
+| **Claude Code** | Szybkie operacje w terminalu, pipeline'y CLI, git workflows | Terminal CLI | Świetne subagenty badawcze, mały narzut UI, dostęp do powłoki | Brak podglądu diffa w GUI |
+| **Antigravity (AGY)** | Złożone przepływy multi-agent, workflow scripts, swarmy | CLI & IDE Extension | Koordynacja subagentów, skrypty w Pythonie, arbitraż Flash/Pro | Wyłączaj zbędne MCP |
+| **OpenCode** | Elastyczny TUI agent łączący modele chmurowe i lokalne | Terminal TUI | Tryby `plan`/`build`, integracja z LSP, 75+ modeli | Konfiguracja providerów |
+| **Codex** | Złożona logika matematyczna i algorytmiczna | CLI / Web | Modele reasoning (o3-mini, GPT-4o) | Koszt tokenów rozumowania |
+| **Cursor** | Kompleksowe tworzenie aplikacji, refaktoringi full-stack | IDE (fork VS Code) | Natywne inline diffs, `.cursor/rules/*.mdc` | Wyciek reguł w multi-root |
 
 ---
 
