@@ -116,11 +116,12 @@ Dysponujesz kartą z **12 GB pamięci VRAM** (np. RTX 3060 12GB lub RTX 4070 12G
 
 ## 5. Podsumowanie Ról w Ekosystemie
 
-| Rola | Rekomendowane Narzędzie | Model | Koszt |
-|---|---|---|---|
-| **Zarządzanie sesjami i wątkami** | T3 Code / Herdr | — | 0 |
-| **Eksploracja i Scout (czytanie)** | Antigravity / OpenCode | Gemini Flash / Haiku / Qwen 7B | Bardzo niski / 0 |
-| **Architektura i Planowanie** | Claude Code / T3 Code / Antigravity | Claude 3.7 Sonnet / o3-mini | Płatny (inwestycja) |
-| **Trudna Implementacja & RCA** | Claude Code / Codex | Claude 3.7 Sonnet / o3-mini | Płatny |
-| **Masowy Refaktoring w tle** | Herdr + OpenCode | Qwen 2.5 Coder 14B / Flash | 0 / Minimalny |
-| **Niezależne Code Review** | Subagent w Antigravity / Claude Code | Claude 3.7 / Gemini 2.0 Pro | Płatny |
+| Rola | Rekomendowane Narzędzie | Model | Koszt | Dedykowana notatka |
+|---|---|---|---|---|
+| **Zarządzanie sesjami i wątkami** | T3 Code / Herdr | — | 0 | [t3-code.md](notes/t3-code.md), [herdr.md](notes/herdr.md) |
+| **Eksploracja i Scout (czytanie)** | Antigravity / OpenCode | Gemini Flash / Haiku / Qwen 7B | Bardzo niski / 0 | [antigravity-cli.md](notes/antigravity-cli.md), [opencode.md](notes/opencode.md) |
+| **Architektura i Planowanie** | Claude Code / T3 Code / Antigravity | Claude 3.7 Sonnet / o3-mini | Płatny (inwestycja) | [claude-code.md](notes/claude-code.md), [codex.md](notes/codex.md) |
+| **Trudna Implementacja & RCA** | Claude Code / Codex | Claude 3.7 Sonnet / o3-mini | Płatny | [claude-code.md](notes/claude-code.md), [codex.md](notes/codex.md) |
+| **Masowy Refaktoring w tle** | Herdr + OpenCode | Qwen 2.5 Coder 14B / Flash | 0 / Minimalny | [herdr.md](notes/herdr.md), [opencode.md](notes/opencode.md) |
+| **Modele Lokalne (0 zł / 0 tokenów)**| Ollama / WSL | Qwen 2.5 Coder, DeepSeek R1 7B | **0 zł** | [local-models-12gb.md](notes/local-models-12gb.md) |
+| **Środowisko Uruchomieniowe**| WSL (Ubuntu/Linux) | — | — | [wsl.md](notes/wsl.md) |

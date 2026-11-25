@@ -9,6 +9,7 @@ Przewodnik po współczesnym stosie technologicznym (tech stack) programisty wsp
 | Moduł | Zakres | Główne technologie |
 |---|---|---|
 | [my-toolset-inventory.md](my-toolset-inventory.md) | **Twój spersonalizowany inwentarz narzędzi** | T3 Code, Herdr, Claude Code, Codex, Antigravity, OpenCode, WSL, Local Models (12 GB) |
+| **[notes/](notes/)** | **Dedykowane notatki per-narzędzie** | [claude-code.md](notes/claude-code.md), [codex.md](notes/codex.md), [antigravity-cli.md](notes/antigravity-cli.md), [opencode.md](notes/opencode.md), [herdr.md](notes/herdr.md), [t3-code.md](notes/t3-code.md), [wsl.md](notes/wsl.md), [local-models-12gb.md](notes/local-models-12gb.md) |
 | [harnesses-and-ides.md](harnesses-and-ides.md) | Środowiska wykonawcze agentów, edytory, terminale | Cursor, Claude Code, Antigravity CLI, Windsurf, Aider, OpenCode |
 | [context-and-mapping.md](context-and-mapping.md) | Deterministyczne indeksowanie i destylacja kodu | AST, tree-sitter, `gen-repo-map`, Repomix, files-to-prompt |
 | [mcp-servers.md](mcp-servers.md) | Model Context Protocol: zarządzanie i optymalizacja | GitHub MCP, Postgres MCP, Playwright, Filesystem, Audyt narzutu |
