@@ -3,7 +3,9 @@
 __pycache__/
 *.pyc
 .DS_Store
-.cursor/
+.cursor/*
+!.cursor/rules/
+!.cursor/REPO-MAP.md
 .idea/
 .vscode/
 dist/
