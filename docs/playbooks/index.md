@@ -13,11 +13,8 @@ Zbiór powtarzalnych procedur pracy z agentami AI dla typowych scenariuszy inży
 | [02: Debugging i RCA](/tokensavemaxxing/playbooks/02-debugging-and-rca/) | Diagnoza błędu i Root Cause Analysis | Hipoteza → Minimalny odczyt logów → Test reprodukcyjny |
 | [03: tokensavemaxxing](/tokensavemaxxing/playbooks/03-token-savemaxxing/) | Optymalizacja kosztów tokenów (3 repo) | Pomiary, 4 warstwy redukcji, repo-map, prompt cache |
 | [04: Multi-Repo Coordination](/tokensavemaxxing/playbooks/04-multi-repo-coordination/) | Praca w układzie frontend + backend + e2e | Folder-scoped workspaces, zapobieganie kolizji reguł |
-| [05: Code Review & Refactor](/tokensavemaxxing/playbooks/05-code-review-and-refactor/) | Bezpieczny refaktoring i audyt PR | Subagent w roli bezstronnego recenzenta, kontrola typów |
+| [05: Code Review & Refactor](/tokensavemaxxing/playbooks/05-code-review-and-refactor/) | Bezpieczny refaktoring i audyt PR | Subagent w roli niezależnego recenzenta, kontrola typów |
 
-## 🎯 Budowa każdego playbooka
+## 🎯 Jak korzystać
 
-1. **Prerequisites** — co przygotować przed startem sesji.
-2. **Turn-by-Turn Flow** — dokładny podział ról między człowieka i agenta.
-3. **Definition of Done** — kiedy zamknąć sesję, zanim pojawi się kosztowne „dopytywanie dla pewności”.
-4. **Gotowe szablony promptów** — do bezpośredniego skopiowania.
+Playbooki to procedury autorskie. Nie wszystkie mają tę samą budowę, a podane progi (liczby linii, tur, tokenów) to konwencje do dostosowania.

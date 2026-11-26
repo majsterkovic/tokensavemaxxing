@@ -9,7 +9,7 @@ Ustrukturyzowany proces tworzenia nowej funkcjonalności od specyfikacji technic
 
 ## 1. Filozofia: "Spec-First, Code-Second"
 
-Najczęstszą przyczyną przepalania tokenów jest natychmiastowe proszenie agenta o pisanie kodu:
+Częstą przyczyną przepalania tokenów jest natychmiastowe proszenie agenta o pisanie kodu:
 - Agent zgaduje architekturę, pisze 200 linii, po czym okazuje się, że założył inną strukturę bazy lub format odpowiedzi API.
 - Każda kolejna poprawka to kolejna długa runda edycji i rosnący dług kontekstowy.
 

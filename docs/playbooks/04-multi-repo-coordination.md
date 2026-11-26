@@ -21,8 +21,8 @@ Typowy podział architektoniczny:
 ### Strategia 1: Osobne Okna IDE (Rekomendowana)
 - Otwórz 3 niezależne okna edytora: jedno na `app/`, drugie na `web/`, trzecie na `e2e/`.
 - **Zalety:**
-  - 100% czystości kontekstowej.
-  - Reguły backendowe nigdy nie zanieczyszczają sesji frontendowej.
+  - Najlepsza izolacja kontekstu (reguły globalne i z katalogów nadrzędnych nadal mogą się ładować).
+  - Reguły projektowe backendu nie trafiają do sesji frontendowej.
   - Pomiary Context Usage Breakdown są precyzyjnie przypisane do danego projektu.
 
 ### Strategia 2: Multi-Root Workspace z Maskami `globs`
@@ -34,7 +34,7 @@ Jeśli musisz widzieć wszystkie 3 drzewa w jednym panelu bocznym edytora:
   globs: ["app/**"]
   ---
   ```
-- **Uwaga:** Pamiętaj o znanym błędzie Cursora 155477 — reguły `alwaysApply: true` z roota któregokolwiek repozytorium wczytają się do wszystkich sesji. Dlatego `alwaysApply: true` ogranicz do absolutnego minimum.
+- **Uwaga:** ⚠️ Według niezweryfikowanych zgłoszeń reguły `alwaysApply: true` z jednego repozytorium mogą ładować się we wszystkich sesjach workspace'u. Sprawdź to w widoku kontekstu i ogranicz `alwaysApply: true` do minimum.
 
 ### Strategia 3: Kontrakt API w Pasywnym Pliku
 Gdy zmieniasz endpoint w backendzie (`app/`) i musisz dostosować frontend (`web/`):

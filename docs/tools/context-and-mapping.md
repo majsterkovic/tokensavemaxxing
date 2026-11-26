@@ -12,27 +12,26 @@ Zestawienie deterministycznych narzędzi do ekstrakcji wiedzy o architekturze, g
 Typowy proces agenta bez mapy repozytorium:
 1. Agent wykonuje `list_dir` lub `glob` (znajduje 200 plików).
 2. Agent zgaduje, które pliki mogą być istotne.
-3. Wykonuje 15 wywołań `read_file` po 500 linii każde = **7 500 linii kodu w kontekście**.
-4. W 60% przypadków okazuje się, że szukana funkcja była w 16. pliku.
+3. Wykonuje (przykład ilustracyjny) 15 wywołań `read_file` po 500 linii każde = **7 500 linii kodu w kontekście**.
+4. Szukana funkcja może być dopiero w kolejnym pliku.
 
 Proces z mapą repozytorium (`REPO-MAP.md`):
-1. Agent czyta skondensowany indeks wygenerowany deterministycznie przez AST:
+1. Agent czyta skondensowany indeks wygenerowany deterministycznie:
    ```text
    src/auth/session.ts
      exports: createSession, verifySession
-     imported-by: src/api/routes/login.ts, src/middleware/auth.ts
    ```
-2. Agent wie dokładnie, do którego pliku i linii skoczyć.
+2. Agent wie, w którym pliku szukać; linię znajduje przez `grep`.
 3. Wykonuje **jedno** precyzyjne czytanie zakresowe: `read_file(path="src/auth/session.ts", start=20, end=45)`.
-4. Zużycie: **25 linii kodu zamiast 7 500**.
+4. W tym hipotetycznym przykładzie: **25 linii zamiast 7 500**. To ilustracja, nie pomiar.
 
 ---
 
 ## 2. Przegląd Narzędzi Mapujących
 
-### A. Własny generator AST: `gen-repo-map.py` (w katalogu `scripts/`)
-- **Działanie**: Skrypt w Pythonie (używający `ast` dla Pythona oraz wyrażeń regularnych / tree-sitter dla TypeScript/JavaScript/Go).
-- **Zaleta**: 0 zależności zewnętrznych, działa offline w ułamku sekundy, integruje się z pre-commit hookiem lub husky.
+### A. Własny generator mapy: `gen-repo-map.py` (w katalogu `scripts/`)
+- **Działanie**: Publiczne funkcje i klasy Pythona (`ast`) oraz nazwy eksportów TS/JS (wyrażenia regularne, heurystyka). Nie obsługuje Go, nie używa tree-sitter i nie buduje grafu importów.
+- **Zaleta**: Bez zewnętrznych zależności, działa offline, można go wywołać z hooka pre-commit.
 - **Koszt**: **0 tokenów LLM**.
 
 ### B. Repomix (dawniej Claude-Pack / Repo-Pack)
@@ -55,16 +54,10 @@ Proces z mapą repozytorium (`REPO-MAP.md`):
 ## 3. Automatyzacja w Pipeline CI/Git
 
 Aby mapa repozytorium nie uległa dezaktualizacji (drift):
-1. **Husky + lint-staged**:
-   ```json
-   {
-     "lint-staged": {
-       "src/**/*.{ts,tsx,py}": [
-         "python3 scripts/gen-repo-map.py . > .cursor/REPO-MAP.md",
-         "git add .cursor/REPO-MAP.md"
-       ]
-     }
-   }
+1. **Hook pre-commit (Husky)** — plik `.husky/pre-commit` w projekcie, do którego skopiowano skrypt:
+   ```sh
+   python3 scripts/gen-repo-map.py . > .cursor/REPO-MAP.md && git add .cursor/REPO-MAP.md
    ```
+   Przekierowanie `>` wymaga powłoki, dlatego nie wpisuj tej komendy wprost w listę `lint-staged`. Skrypt czyta drzewo robocze, więc uwzględni też zmiany niedodane do indeksu. Nagłówek mapy zawiera nazwę katalogu, która może się różnić między klonami.
 2. **Korzyść w Code Review**:
-   Gdy programista dodaje lub modyfikuje publiczne API modułu, zmiana w `.cursor/REPO-MAP.md` pojawia się w diffie PR-a. Recenzent od razu widzi zmianę sygnatury interfejsu.
+   Gdy programista dodaje lub modyfikuje publiczne API modułu, zmiana w `.cursor/REPO-MAP.md` pojawia się w diffie PR-a. Recenzent widzi dodane, usunięte i przemianowane symbole. Zmian samych sygnatur mapa nie pokazuje.

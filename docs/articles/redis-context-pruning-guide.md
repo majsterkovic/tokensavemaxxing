@@ -1,71 +1,49 @@
 ---
-title: "Redis: Pruning Kontekstu a 'Context Rot' i Cache Semantyczny"
-description: "Redis: Pruning Kontekstu a 'Context Rot' i Cache Semantyczny"
+title: "Redis: Pruning Kontekstu i Cache Semantyczny"
+description: "Przewodnik Redis o przycinaniu kontekstu, jego ograniczeniach i łączeniu z cache semantycznym."
 ---
 
-Analiza publikacji inżynierskiej Redis (*"Context Pruning: Cut LLM Tokens Without Losing Quality"*, 2026).
-
----
-
-## 1. Zjawisko "Context Rot" (Dlaczego Duże Okno Nie Rozwiązuje Problemu)
-
-Współczesne modele oferują okna kontekstowe sięgające miliona tokenów (1M+). Wielu programistów zakłada, że skoro model pomieści całe repozytorium, można bezkarnie wstrzykiwać surowe zrzuty danych.
-
-Redis zwraca uwagę na zjawisko **Context Rot (Gnicie Kontekstu)**:
-- Wraz ze wzrostem liczby nieistotnych tokenów w oknie, model traci ostrość uwagi (attention dilution).
-- Pojawiają się halucynacje, pomijanie instrukcji z promptu systemowego oraz błędne łączenie faktów z odległych tur.
-- **Wniosek**: Pruning kontekstu to nie tylko oszczędność pieniędzy (FinOps) — **odpowiednio przycięty kontekst bezpośrednio podnosi jakość i poprawność generowanego kodu**.
+Analiza przewodnika Redis [Context Pruning: Cut LLM Tokens Without Losing Quality](https://redis.io/blog/context-pruning-llm-tokens). To materiał dostawcy, który sprzedaje cache semantyczny.
 
 ---
 
-## 2. Dwie Metodologie Pruningu według Redis
+## 1. Dlaczego duże okno nie wystarcza
 
-```
-┌────────────────────────────────────────────────────────┐
-│             Techniki Pruningu Kontekstu                │
-├──────────────────────────┬─────────────────────────────┤
-│  Token-Level Pruning     │  Chunk-Level / Query-Aware  │
-│  (np. LLMLingua-2)       │  (Zalecany dla Kodu i RAG)  │
-├──────────────────────────┼─────────────────────────────┤
-│ - Mały enkoder ocenia    │ - Analiza całych bloków     │
-│   każdy token            │   funkcji / modułów         │
-│ - Usuwanie spójników     │ - Zachowuje składnię i AST  │
-│   i powtórzeń            │ - Usuwa całe martwe sekcje  │
-│ - Ryzykowne w kodzie     │ - Bezpieczne dla TypeScript/│
-│   (może wyciąć średnik   │   Python                    │
-│   lub nawias)            │                             │
-└──────────────────────────┴─────────────────────────────┘
-```
+Przewodnik wskazuje, że dłuższy kontekst może pogarszać wyniki:
+- efekt **„lost in the middle”** (informacja ze środka jest gorzej wykorzystywana),
+- sama długość wejścia może obniżać jakość,
+- źle zarządzany kontekst powoduje zatrucie (utrwalone błędne dane), rozproszenie, pomyłki i sprzeczności.
 
-Dla programowania agentowego Redis rekomenduje **Chunk-Level & Query-Aware Pruning**:
-- W kodzie źródłowym wycięcie pojedynczego tokenu (np. `!`, `?`, `}`) może zmienić semantykę programu.
-- Dlatego przycinanie kodu powinno operować na granicach bloków AST (funkcje, klasy, pliki), a nie na losowych pojedynczych tokenach.
+Pruning **często, ale nie zawsze**, poprawia jakość. Redis opisuje też ryzyka: zbyt mocne cięcie traci informacje i może zwiększać halucynacje, a w krótkich kontekstach jakość zwykle spada wraz z kompresją.
 
 ---
 
-## 3. Architektura Produkcyjna: Pruning + Semantic Caching (Redis)
+## 2. Granulacja pruningu
 
-Redis proponuje 3-stopniowy pipeline obsługi zapytań:
+| Podejście | Uwagi z przewodnika |
+|---|---|
+| **Na poziomie tokenów** (np. LLMLingua-2) | Nadaje się do ogólnego tekstu; w kodzie może zepsuć składnię |
+| **Na poziomie fragmentów** | Dla kodu zalecane są całe jednostki logiczne, np. definicje funkcji i bloki klas |
+| **Query-aware** | Zachowuje tokeny istotne dla pytania; wskazane, gdy ważna jest dokładność |
+
+Przykład z przewodnika: na SWE-Bench wyspecjalizowany SWE-Pruner osiągnął 64% sukcesu zadań, a LLMLingua-2 54%. Liczby pochodzą z prac przytoczonych przez Redis, których tu nie weryfikowano.
+
+---
+
+## 3. Pruning z cache semantycznym
 
 ```
-Zapytanie Agenta / Programisty
-              │
-              ▼
-    [1. Semantic Cache (Redis)]
-    Porównanie wektora zapytania z bazą wcześniejszych odpowiedzi
-              │
-      ┌───────┴───────┐
-      ▼               ▼
-[Cache HIT]     [Cache MISS]
-Zwrot gotowej         │
-odpowiedzi            ▼
-(0 tokenów LLM, [2. Query-Aware Context Pruning]
- 5 ms czasu)    Usunięcie nieistotnych chunków i martwych bloków
-                      │
-                      ▼
-                [3. Inferencja LLM]
-                Wysyłka oczyszczonego kontekstu do modelu
+Zapytanie → cache semantyczny ── trafienie ──→ zapisana odpowiedź (bez inferencji)
+                   │
+                chybienie
+                   ▼
+          pobranie kontekstu → pruning → LLM → zapis odpowiedzi w cache
 ```
 
-- **Cache Hit**: Identyczne lub bardzo zbliżone zapytanie (np. częste pytania o schemat bazy czy konfigurację środowiska) pobierane jest z cache semantycznego w kilka milisekund, z zerowym kosztem API.
-- **Cache Miss**: Zapytanie przechodzi przez filtr pruningu, który wycina szum przed uderzeniem do LLM.
+Dla usługi Redis LangCache producent podaje do 15× szybsze odpowiedzi przy trafieniach i do 73% niższe koszty **we własnych benchmarkach**.
+
+**Uwaga (autorska):** w programowaniu agentowym odpowiedź zależy od aktualnego stanu repozytorium. Zwrócenie odpowiedzi z cache dla „podobnego” pytania może dać nieaktualny wynik, więc potrzebne są reguły unieważniania.
+
+## Źródła
+
+- [Redis: Context pruning for LLM tokens](https://redis.io/blog/context-pruning-llm-tokens)

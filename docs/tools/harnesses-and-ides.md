@@ -52,7 +52,7 @@ Szczegółowy przegląd najpopularniejszych harnessów i platform agentowych pod
 
 ## 5. Claude Code — Terminal CLI od Anthropic
 
-- **Rola**: Oficjalne narzędzie konsolowe Anthropic zintegrowane z modelami Claude 3.7 Sonnet i Claude 3.5 Haiku.
+- **Rola**: Oficjalne narzędzie konsolowe Anthropic korzystające z modeli Claude (aktualną listę sprawdź w dokumentacji).
 - **Kluczowe właściwości**:
   - Znakomite rozumowanie przy skomplikowanym refaktoringu.
   - Wbudowana obsługa subagentów badawczych z odrębnym oknem kontekstowym.
@@ -62,7 +62,7 @@ Szczegółowy przegląd najpopularniejszych harnessów i platform agentowych pod
 
 ## 6. OpenAI Codex / CLI — Narzędzia Rozumujące
 
-- **Rola**: Dedykowane interfejsy i modele rozumujące OpenAI (o3-mini, GPT-4o).
+- **Rola**: Dedykowane interfejsy i modele rozumujące OpenAI (nazwy modeli zmieniają się często — sprawdź aktualne).
 - **Kluczowe właściwości**:
   - Znakomita precyzja w skomplikowanych algorytmach, logice biznesowej i analizie matematycznej.
   - Modele serii "o" generują ukryte łańcuchy myślowe (reasoning tokens), co podnosi skuteczność w trudnych zadaniach architektonicznych.

@@ -13,18 +13,19 @@ Model Context Protocol (MCP) to potężny standard umożliwiający podłączanie
 
 Jednak z punktu widzenia LLM każde zarejestrowane narzędzie MCP oznacza:
 1. **JSON Schema w każdej turze**:
-   Każda funkcja serwera MCP posiada schemat opisujący nazwę, parametry, typy i opisy. Złożony serwer (np. GitHub MCP lub Playwright MCP) potrafi definiować 20-40 narzędzi.
+   Każda funkcja serwera MCP posiada schemat opisujący nazwę, parametry, typy i opisy. Rozbudowane serwery potrafią definiować wiele narzędzi naraz; ich liczbę sprawdź w swoim harnessie.
 2. **Zużycie tokenów**:
-   Średnio jedna definicja narzędzia to 150-300 tokenów. Zestaw 5 serwerów MCP potrafi wstrzykiwać **5 000 - 12 000 tokenów definicji do każdego pojedynczego zapytania**!
+   Rozmiar definicji zależy od schematu i opisu. Przy wielu serwerach ładowanych w całości stały narzut może sięgać tysięcy tokenów — zmierz go w widoku kontekstu. Harnessy z ładowaniem na żądanie zmniejszają ten koszt.
 3. **Konflikt z Prompt Caching**:
-   Jeśli konfiguracja MCP zmienia się dynamicznie w trakcie sesji, cały prefiks Prompt Cache zostaje zniszczony, powodując pełne przeliczenie kosztu tury po stawkach bez cache.
+   Jeśli konfiguracja MCP zmienia się dynamicznie w trakcie sesji, część prompt cache od miejsca zmiany może zostać unieważniona.
 
 ---
 
-## 2. Pomiary Empiryczne (Cursor Engineering, 2026)
+## 2. Co Zmierzono (Cursor, 2026)
 
-- **Do −46.9% tokenów w sesji**: Wyłączenie serwerów MCP, które nie są niezbędne do aktualnie wykonywanego zadania, przynosi natychmiastową redukcję zużycia tokenów niemal o połowę.
-- **Wzrost precyzji wyboru narzędzi**: Gdy agent ma do wyboru 8 narzędzi zamiast 60, prawdopodobieństwo halucynacji lub błędnego doboru parametrów spada o ponad 35%.
+[Cursor: Improved token efficiency](https://cursor.com/blog/improved-token-efficiency): **dynamiczne (na żądanie) ładowanie narzędzi MCP** zmniejszyło łączną liczbę tokenów o **46,9% w sesjach, które wywołały narzędzie MCP**. Mechanizm opisuje też [Dynamic context discovery](https://cursor.com/blog/dynamic-context-discovery).
+
+To **nie jest** pomiar wyłączania serwerów. Wcześniejsza wersja przypisywała tę liczbę wyłączaniu serwerów i dodawała „ponad 35%” mniej błędów wyboru narzędzi; dla tej drugiej liczby nie ma źródła, więc ją usunięto. Wyłączanie zbędnych serwerów pozostaje rozsądnym zaleceniem autorskim.
 
 ---
 
@@ -32,7 +33,7 @@ Jednak z punktu widzenia LLM każde zarejestrowane narzędzie MCP oznacza:
 
 Podziel konfigurację serwerów MCP na profile domenowe (np. w plikach konfiguracyjnych lub skryptach przełączających):
 
-### Profil 1: Core Coding (Domyślny dla 90% zadań programistycznych)
+### Profil 1: Core Coding (proponowany domyślny)
 ```json
 {
   "mcpServers": {
@@ -43,7 +44,7 @@ Podziel konfigurację serwerów MCP na profile domenowe (np. w plikach konfigura
   }
 }
 ```
-*Narzut*: ~400 tokenów.
+*Narzut*: zmierz w swoim harnessie.
 
 ### Profil 2: E2E & Browser Testing (Tylko podczas pisania/debugowania testów przeglądarkowych)
 - Dodaje: `playwright-mcp` lub `puppeteer-mcp`.
@@ -58,4 +59,4 @@ Podziel konfigurację serwerów MCP na profile domenowe (np. w plikach konfigura
 
 1. **ReadOnly z założenia**: Jeśli serwer MCP służy do pobierania wiedzy (np. dokumentacja, research, API rynkowe), konfiguruj go w trybie tylko do odczytu (`readonly`), aby zapobiec przypadkowym mutacjom środowiska produkcyjnego.
 2. **Krótki output w narzędziach**: Dostosuj serwery MCP tak, aby ich odpowiedzi zwracały zwięzłe podsumowania lub ograniczały paginację (np. `limit: 10`), a nie surowe zrzuty 10 000 wierszy JSON.
-3. **Audyt JSON Schema**: Usuwaj nadmiarowe, rozwlekłe opisy z definicji narzędzi we własnych serwerach MCP. Zwięzły opis argumentu (`"id użytkownika"`) działa równie dobrze jak 3 akapity prozy, zużywając 5× mniej tokenów.
+3. **Audyt JSON Schema**: Usuwaj nadmiarowe, rozwlekłe opisy z definicji narzędzi we własnych serwerach MCP. Zwięzły opis argumentu (`"id użytkownika"`) często wystarcza i kosztuje mniej; sprawdź, czy model nadal poprawnie wywołuje narzędzie.

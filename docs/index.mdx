@@ -25,7 +25,7 @@ import { CardGrid, LinkCard } from '@astrojs/starlight/components';
 <CardGrid>
   <LinkCard
     title="📚 Artykuły i Badania"
-    description="13 syntez badań empirycznych (Cursor, Vercel, ETH Zürich, Spotify, Emory, Redis) o ekonomii tokenów i pruningu."
+    description="13 opracowań publikacji, benchmarków i wpisów inżynierskich (m.in. Cursor, Vercel, Spotify, Redis) z linkami do źródeł."
     href="/tokensavemaxxing/articles/"
   />
   <LinkCard
@@ -47,10 +47,10 @@ import { CardGrid, LinkCard } from '@astrojs/starlight/components';
 
 ## ⚡ 5 Filarów Tokensavemaxxing
 
-| Filar | Działanie | Rezultat |
+| Filar | Działanie | Czego się spodziewać |
 |---|---|---|
-| **1. Warstwa Zerowa (`.cursorignore`)** | Wycięcie generowanego kodu, map źródeł, lockfile'ów, assetów | Indeksowanie 12 min → 4 min; koszt sesji −20% |
-| **2. Pasywna Mapa Symboli (`REPO-MAP.md`)** | Deterministyczny graf eksportów i importów przez AST (~2k tok) | Zastępuje setki `read_file`, pass rate skacze do 100% |
-| **3. Czystka MCP (Tool Pruning)** | Wyłączenie nieużywanych serwerów protokołu MCP z workspace | Natychmiastowe obcięcie stałego narzutu tury o do **46.9%** |
-| **4. Dyscyplina Reguł (`<2000 tok`)** | Przejście z `alwaysApply: true` na reguły z maskami `globs` | Zapobieganie równomiernej degradacji uwagi modelu |
-| **5. Subagenty Badawcze (Scouts)** | Tani model (Flash/Haiku) z zakazem cytowania kodu (tylko wniosek + linie) | Redukcja zanieczyszczenia sesji głównej z 6k do `<450 tok` |
+| **1. Warstwa Zerowa (`.cursorignore`)** | Wykluczenie kodu generowanego, map źródeł, lockfile'ów, assetów | Mniej szumu w indeksie; efekt zmierz u siebie |
+| **2. Pasywna Mapa Symboli (`REPO-MAP.md`)** | Lista publicznych symboli Pythona (`ast`) i eksportów TS/JS (regex), bez grafu importów | Może ograniczyć liczbę odczytów; efektu tej mapy nie zmierzono |
+| **3. Narzędzia MCP na żądanie** | Dynamiczne ładowanie definicji; wyłączanie zbędnych serwerów | [Cursor](https://cursor.com/blog/improved-token-efficiency): −46,9% tokenów w sesjach wywołujących MCP dla ładowania **na żądanie** (nie dla wyłączania serwerów) |
+| **4. Dyscyplina Reguł** | Krótkie reguły stałe, reszta przez `globs` | Mniejszy stały narzut; budżet poniżej 2000 tok to konwencja repo |
+| **5. Subagenty Badawcze (Scouts)** | Eksploracja w osobnym kontekście, raport ze ścieżkami i liniami | Czystszy główny kontekst; łączne zużycie może wzrosnąć |

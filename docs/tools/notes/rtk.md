@@ -3,15 +3,15 @@ title: "Notatka Narzędziowa: RTK (Rust Token Killer — `rtk-ai/rtk`)"
 description: "Notatka Narzędziowa: RTK (Rust Token Killer — `rtk-ai/rtk`)"
 ---
 
-> **Rola w ekosystemie**: Wysokowydajny proxy CLI w języku Rust, redukujący zużycie tokenów z wyjścia terminala o **60% do 90%** przed wysłaniem do okna kontekstowego agenta.
+> **Rola w ekosystemie**: Wysokowydajny proxy CLI w języku Rust, redukujący liczbę tokenów w wyjściu poleceń przed wysłaniem do kontekstu agenta. Autorzy deklarują **do 90% mniej wyjścia poleceń** ([README](https://github.com/rtk-ai/rtk), odczyt 26.11.2026; nie zweryfikowano niezależnie). Sami zastrzegają, że to nie jest taka sama redukcja rachunku.
 
 ---
 
 ## 1. Profil Narzędzia
 
 - **Repozytorium**: `https://github.com/rtk-ai/rtk`
-- **Język**: Rust (pojedynczy plik binarny, 0 zależności zewnętrznych).
-- **Narzut czasowy**: < 10 ms (praktycznie niewyczuwalny dla człowieka i agenta).
+- **Język**: Rust.
+- **Narzut czasowy**: według autorów poniżej 25 ms na polecenie (nie mierzono tutaj).
 - **Zasada działania**: Działa jako transparentny filtr/pośrednik (proxy) między poleceniami powłoki uruchamianymi przez agenta (`git`, `cargo`, `pytest`, `npm`, `docker`, `kubectl`) a oknem kontekstowym LLM.
 
 ---
@@ -39,22 +39,28 @@ RTK przechwytuje strumień `stdout` / `stderr` i poddaje go inteligentnej kompre
 
 ### A. Instalacja binarnej wersji
 ```bash
-# Instalacja przez cargo (Rust)
-cargo install rtk-cli
+# macOS / Linux (Homebrew)
+brew install rtk
 
-# Lub pobranie gotowej binarki z GitHub Releases
-curl -fsSL https://raw.githubusercontent.com/rtk-ai/rtk/main/install.sh | bash
+# Windows
+winget install rtk-ai.rtk
+
+# Lub oficjalny skrypt (przeczytaj go przed uruchomieniem)
+curl -fsSL https://raw.githubusercontent.com/rtk-ai/rtk/refs/heads/master/install.sh | sh
+
+# Sprawdzenie, że to właściwy program: w crates.io istnieje inne narzędzie o nazwie "rtk"
+rtk gain
 ```
 
-### B. Inicjalizacja w projekcie
+### B. Integracja z agentem
 ```bash
-# W roocie projektu wewnątrz WSL:
-rtk init
+rtk init -g
 ```
+Aktualne polecenia i opcje dla poszczególnych agentów: [README RTK](https://github.com/rtk-ai/rtk).
 
 ### C. Podpięcie pod Claude Code / OpenCode / Antigravity
 W Claude Code lub OpenCode RTK może być wywoływany automatycznie poprzez wrapper powłoki lub hak `PreToolUse`:
-- Zamiast wywoływać `bash -c "pytest"`, agent wywołuje `rtk run pytest`.
+- Zamiast `pytest` agent wywołuje wariant przez `rtk` (np. `rtk pytest`).
 - Wtyczka może aliasować domyślne polecenia powłoki: `git`, `npm`, `cargo`, `pytest`, `docker`.
 
 ---
@@ -69,11 +75,13 @@ rtk gain
 Wyświetla estymację:
 - Liczbę przetworzonych komend CLI.
 - Wolumen surowych tokenów wejściowych vs tokenów po kompresji.
-- Szacunkową kwotę zaoszczędzoną w dolarach na bazie stawek Claude 3.7 Sonnet / GPT-4o.
+- Z flagą `--quota` szacunek względem miesięcznego limitu subskrypcji (opcje: `rtk gain --help`, sprawdzone w wersji 0.51.0).
 
 ---
 
 ## 5. Zastosowanie w Metodologii Tokensavemaxxing
+
+> Przykłady **ilustracyjne** (⚠️ niezweryfikowane, bez metodyki pomiaru). Rzeczywisty zysk sprawdź przez `rtk gain`.
 
 | Bez RTK | Z RTK | Zysk |
 |---|---|---|

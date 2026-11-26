@@ -11,18 +11,20 @@ description: "Notatka Narzędziowa: Modele Lokalne w Środowisku 12 GB VRAM"
 
 Karta graficzna z 12 GB VRAM (np. RTX 3060 12GB lub RTX 4070 12GB) to idealny punkt wejścia do lokalnej inżynierii AI:
 - Zapewnia wystarczającą pamięć dla modeli do **14 miliardów parametrów (14B)** w kwantyzacji 4-bitowej (`Q4_K_M`).
-- Zapewnia pełną przepustowość dla modeli **7B/8B** w wysokiej kwantyzacji (`Q8_0` lub `Q5_K_M`), generując 40–80 tokenów na sekundę.
+- Zapewnia pełną przepustowość dla modeli **7B/8B** w wysokiej kwantyzacji (`Q8_0` lub `Q5_K_M`), z szybkością rzędu 40–80 tokenów na sekundę (⚠️ niezweryfikowane; zależy od karty i modelu).
 
 ---
 
-## 2. Zestawienie Rekomendowanych Modeli dla 12 GB VRAM
+## 2. Zestawienie Modeli dla 12 GB VRAM
+
+> Rozmiary VRAM i opisy ról to orientacyjne oceny (⚠️ niezweryfikowane), o ile przy wierszu nie ma źródła.
 
 | Model | Rozmiar / Kwantyzacja | Użycie VRAM | Główna rola w Tokensavemaxxing |
 |---|---|---|---|
-| **Inkling 2 Mini** (Thinking Machines) | Looped MoE (26.4B tot / 3.4B act, NVFP4/Q4) | ~9–11 GB (GGUF/offload) | **Przełomowy Looped MoE**: 48 przejść logicznych, multimodalny, 1M kontekstu. Głębokie rozumowanie bez rozmiaru 70B! Szczegóły: [Architektura Inkling 2 Mini](/tokensavemaxxing/articles/inkling-2-mini-architecture/) |
+| **Inkling 2 Mini** (Thinking Machines) | Looped MoE (26,4B łącznie / 3,4B aktywnych, NVFP4+MXFP8) | ok. 20 GB — **nie mieści się w 12 GB** bez offloadu lub innej kwantyzacji ([źródło](https://thinkingmachines.ai/news/inkling-2-mini)) | Looped MoE: 48 zastosowań warstw z 24 zapisanych. Multimodalności i kontekstu 1M nie znaleziono w ogłoszeniu. Szczegóły: [Architektura Inkling 2 Mini](/tokensavemaxxing/articles/inkling-2-mini-architecture/) |
 | **DeepSeek-R1-Distill-Qwen-7B** | `Q5_K_M` lub `Q6_K` | ~7.2 GB | **"Thinking Mini"**: Lokalne rozumowanie, analiza edge-case'ów, planowanie kroków przed wysłaniem do API |
-| **Qwen 2.5 Coder 14B** | `Q4_K_M` | ~9.8 GB | **Lokalny Programista**: Najsilniejszy model 14B na rynku, rozumie TypeScript/Python, generuje złożone funkcje |
-| **Qwen 2.5 Coder 7B** | `Q8_0` | ~8.4 GB | **Błyskawiczny Asystent**: Niezwykle szybki, bezbłędny w prostych funkcjach i testach jednostkowych |
+| **Qwen 2.5 Coder 14B** | `Q4_K_M` | ~9.8 GB | **Lokalny Programista**: mocny model do kodu (ranking ⚠️ niezweryfikowane), rozumie TypeScript/Python, generuje złożone funkcje |
+| **Qwen 2.5 Coder 7B** | `Q8_0` | ~8.4 GB | **Błyskawiczny Asystent**: Niezwykle szybki, dobry do prostych funkcji i testów jednostkowych (wynik zawsze uruchom) |
 | **Phi-4 (14B)** | `Q4_K_M` | ~10.1 GB | **Logika Matematyczna**: Świetny w precyzyjnych kalkulacjach i weryfikacji algorytmów |
 | **SmolLM2 1.7B / Qwen 1.5B** | `FP16` / `Q8_0` | ~2.5 GB | **Lokalny Triage**: Błyskawiczny routing, klasyfikacja plików i tagowanie bez obciążania GPU |
 
@@ -53,7 +55,7 @@ nvidia-smi
 Ollama udostępnia endpoint kompatybilny z OpenAI API pod adresem:
 `http://localhost:11434/v1`
 
-W konfiguracji OpenCode (`~/.config/opencode/config.json`):
+Przykładowa konfiguracja OpenCode (⚠️ niezweryfikowane; schemat sprawdź w dokumentacji OpenCode):
 ```json
 {
   "provider": "ollama",
@@ -68,8 +70,8 @@ Możesz pisać kod w terminalu OpenCode z zerowym zużyciem tokenów chmurowych!
 ## 5. Zastosowanie w Metodologii Tokensavemaxxing
 
 1. **Faza 0 (Planowanie bez opłat)**:
-   Zamiast płacić za 5 tur planowania w Claude 3.7 Sonnet, puszczasz brief przez lokalny `DeepSeek-R1-Distill-Qwen-7B`. Model myśli lokalnie, generuje precyzyjny 4-punktowy plan.
+   Zamiast płacić za 5 tur planowania w płatnym modelu, puszczasz brief przez lokalny `DeepSeek-R1-Distill-Qwen-7B`. Model myśli lokalnie, generuje precyzyjny 4-punktowy plan.
 2. **Generowanie Danych Testowych i Mocków**:
-   Tworzenie 50 rekordów testowych lub mocków API nie wymaga modelu za $20/miesiąc — lokalny `Qwen 7B` zrobi to w 3 sekundy.
+   Tworzenie 50 rekordów testowych lub mocków API nie wymaga modelu za $20/miesiąc — lokalny `Qwen 7B` zwykle sobie z tym poradzi.
 3. **Prywatność Danych Wrażliwych**:
    Logi produkcyjne z tokenami sesji, kluczami czy danymi osobowymi możesz analizować wyłącznie lokalnie, nie ryzykując wycieku do chmury.

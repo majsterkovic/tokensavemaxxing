@@ -1,63 +1,68 @@
 ---
-title: "Benchmarki Nawigacji po Repozytorium: Grep vs AST vs LSP vs Code Graph"
-description: "Benchmarki Nawigacji po Repozytorium: Grep vs AST vs LSP vs Code Graph"
+title: "Nawigacja po Repozytorium: Grep vs AST vs LSP vs Code Graph"
+description: "Co faktycznie zmierzono dla grep, zarysu AST, LSP i grafów kodu w pętli agenta oraz jakie są ograniczenia tych pomiarów."
 ---
 
-Kompleksowa synteza badań empirycznych (m.in. arXiv:2608.13568v1, ast-grep, Repowise, Antão Almada, Reddit r/ClaudeCode) dotyczących optymalizacji przeszukiwania kodu w pętli agenta.
-
----
-
-## 1. Wielkie Porównanie Metod Nawigacji
-
-Większość agentów domyślnie próbuje czytać pliki od początku do końca (`cat` / `read_file`), co jest główną przyczyną marnotrawstwa tokenów. Wybór odpowiedniej warstwy nawigacji determinuje koszt sesji:
-
-| Metoda | Narzut i Czas Startu | Wpływ na Tokeny | Kiedy Bezwzględnie Wygrywa |
-|---|---|---|---|
-| **`ripgrep` / `grep`** | Błyskawiczny (<10 ms), 0 konfiguracji | Baza odniesienia (duży szum przy nieunikalnych nazwach) | Proste wyszukiwanie ciągów znaków, logi, unikalne ID |
-| **AST / Tree-sitter** (`ast-grep outline`, `repo-map`) | Bardzo szybki (<50 ms), brak demona | **35% – 55% mniej tokenów** (~50% mniejszy kontekst) | **Pierwszy rzut oka na plik**: zarys funkcji, sygnatury, interfejsy zamiast czytania ciała metod |
-| **LSP** (`Serena MCP`, `agent-lsp`) | Wolny start serwera, bywa kruchy w procesach CLI | **+6% do +19% drożej** w prostym szukaniu, ale **5× do 1441× taniej** przy rename | Wieloplikowy refaktoring, skoki do definicji (go-to-def), śledzenie typów |
-| **Code Graph** (AST + Call Graph przez MCP) | Wymaga wstępnego indeksowania projektu | **Do ~10× mniej tokenów**, 58% mniej wywołań narzędzi | Złożone pytania architektoniczne w wielkich monorepo |
-| **Wyszukiwanie Semantyczne** (BM25 + wektory) | Wymaga bazy wektorowej i embeddingów | ~40% mniej tokenów przy nieznanych nazwach | Gdy programista/agent nie zna dokładnej nazwy funkcji |
+Zestawienie pomiarów dotyczących przeszukiwania kodu przez agenta. Każdy pochodzi z innego eksperymentu, więc procentów **nie można porównywać między wierszami**.
 
 ---
 
-## 2. Co Pokazują Twarde Benchmarki z 2026 Roku?
+## 1. Porównanie metod
 
-### A. Paradoks Grep vs LSP (Badanie arXiv:2608.13568v1)
-Naukowcy zbadali zachowanie agentów wyposażonych w LSP oraz narzędzia tekstowe:
-- **W prostych zadaniach eksploracyjnych** zmuszenie agenta do korzystania z LSP **zwiększyło zużycie tokenów o 6% do 19%** (ze względu na narzut protokołu JSON-RPC i rozbudowane odpowiedzi serwera językowego).
-- **Przełom przy refaktoringu**: W zadaniach typu multi-file rename / safe refactor, LSP podbiło wskaźnik sukcesu `pass@1` z **0.67 do 0.83**, redukując liczbę dodatkowych odczytów plików z **15.2 do zaledwie 3.2**.
-
-### B. Bezwzględna Przewaga AST (`ast-grep outline` & Tree-sitter)
-W benchmarku `is-grep-enough` przeprowadzonym na 10 potężnych repozytoriach (Redis, Django, Bitcoin, VS Code):
-- **Zarys AST (Outline)** wyciąga strukturę modułu (nazwy klas, metod, dekoratory) bez ciał funkcji.
-- **Wyniki empiryczne redukcji kosztów w Claude Code**:
-  - **VS Code**: spadek kosztów o **35%**
-  - **OkHttp**: spadek kosztów o **40%**
-  - **Django**: spadek kosztów o **55%**
-  Przy zachowaniu **100% poprawności** lokalizacji właściwych fragmentów kodu.
-
-### C. Grafy Wiedzy o Kodzie (Code Graphs — Antão Almada & Repowise)
-- Zbudowanie grafu relacji wywołań (`Caller -> Callee`) w serwerze MCP (np. Codebase-Memory / Repowise) zredukowało liczbę wywołań narzędzi o **58%**, skracając czas wykonania zadania o **22%**.
-- Agent nie musi czytać 12 plików pośrednich, aby zrozumieć, skąd pochodzi dany parametr — odpytuje graf jednym zapytaniem.
+| Metoda | Co zmierzono | Źródło i ograniczenia |
+|---|---|---|
+| **`ripgrep` / `grep`** | Punkt odniesienia. Bez indeksu i serwera; przy popularnych nazwach daje szum | — |
+| **Zarys AST** (`ast-grep outline`) | Mediana kosztu Claude Code: VS Code −35%, Django −55%, OkHttp −40% | [Benchmark autorów narzędzia](https://ast-grep.github.io/blog/ast-grep-outline); w mniejszych repozytoriach bywało drożej |
+| **LSP** | W badanych zadaniach zwykle drożej niż grep; lepsza precyzja przy szukaniu referencji | [Wstępne badanie, Pengcheng Xu](https://arxiv.org/html/2608.13568v1); małe próby |
+| **Code graph** | 58% mniej wywołań narzędzi, 22% szybciej | Deklaracja narzędzia codegraph cytowana u [Antão Almady](https://antaoalmada.dev/posts/Code-Agent-Knowledge-Graphs) (mediana z 4 przebiegów) |
 
 ---
 
-## 3. Złoty Standard Przepływu w tokensavemaxxing (Podejście Warstwowe)
+## 2. Szczegóły
+
+### A. LSP vs grep ([arXiv:2608.13568v1](https://arxiv.org/html/2608.13568v1))
+
+*Does a Language Server Save Tokens for Coding Agents? A Measurement Methodology and Preliminary Study* (czerwiec 2026). Zadania na pythonowym `requests` i dwóch repozytoriach TypeScript, modele Claude.
+
+- **Lokalizacja po nazwie symbolu** (Opus 4.8): tylko LSP kosztował **+6% tokenów**, a mając wybór, agent z LSP nie korzystał. Dla Sonnet 4.6 narzut wyniósł +118%, a Haiku 4.5 zyskał (−26%).
+- **Kompletność referencji** (Opus 4.8): LSP dał pełną precyzję (1,00 vs 0,76), ale kosztował **około 19% więcej**.
+- **Rename w wielu plikach:** grep miał `pass@1` 1,00. LSP zwracający same lokalizacje miał 0,67. Dołączenie tekstu linii do wyników podniosło go do **0,83** i zmniejszyło liczbę odczytów plików na epizod z **15,2 do 3,2**. Grep nadal wygrywał, bo rename obejmuje też komentarze i stringi.
+
+Te liczby **nie pokazują**, że LSP jest tańszy od grep przy refaktoringu. Wartości 0,67 → 0,83 porównują dwa warianty LSP.
+
+### B. Zarys AST ([ast-grep outline](https://ast-grep.github.io/blog/ast-grep-outline))
+
+Zarys pokazuje strukturę pliku bez ciał funkcji. W benchmarku na siedmiu repozytoriach autorzy podają spadek mediany kosztu o 35% (VS Code), 55% (Django) i 40% (OkHttp). **Mediana** pokrycia i precyzji względem wyniku referencyjnego została na 100%, ale pojedyncze przebiegi nie zawsze się z nim zgadzały. W małych repozytoriach zarys czasem tylko dokładał pracy.
+
+### C. Grafy kodu
+
+[Almada](https://antaoalmada.dev/posts/Code-Agent-Knowledge-Graphs) opisuje kilka narzędzi i przytacza ich wyniki, w tym akademicką ewaluację (arXiv:2603.27277, 31 repozytoriów): 10× mniej tokenów i 2,1× mniej wywołań niż przy eksploracji plik po pliku, przy 83% jakości odpowiedzi. Przegląd narzędzi daje też [Repowise](https://repowise.dev/blog/comparisons/best-code-graph-mcp-servers), który jest jednocześnie dostawcą jednego z nich.
+
+---
+
+## 3. Przepływ warstwowy (propozycja tego repozytorium)
+
+To **zalecenie autorskie**, niezmierzone jako całość.
 
 ```
-[Krok 1: Precyzyjny Grep]
-Znalezienie pliku po nazwie symbolu przez ripgrep (0.01s, 0 tokenów)
+[Krok 1: Grep]            znajdź plik po nazwie symbolu
        │
        ▼
-[Krok 2: AST Outline zamiast cat/read_file]
-ast-grep outline lub REPO-MAP.md — poznanie linii start/end metody (oszczędność 50%)
+[Krok 2: Zarys]           ast-grep outline (numery linii) zamiast czytania całego pliku
+       │                  REPO-MAP.md pokazuje tylko pliki i eksporty, bez numerów linii
+       ▼
+[Krok 3: Odczyt zakresu]  np. read_file(start=40, end=65)
        │
        ▼
-[Krok 3: Precyzyjny Odczyt Zakresowy]
-read_file(start=40, end=65) — przeczytanie TYLKO 25 linii implementacji
-       │
-       ▼
-[Krok 4: Weryfikacja Typów i Referencji (LSP)]
-Uruchomienie serwera LSP TYLKO wtedy, gdy zmiana dotyka interfejsów w wielu plikach
+[Krok 4: LSP]             gdy potrzebne są dokładne referencje typów
 ```
+
+Przy rename nadal sprawdź grep-em komentarze i stringi.
+
+## Źródła
+
+- [Pengcheng Xu, arXiv:2608.13568v1](https://arxiv.org/html/2608.13568v1)
+- [ast-grep: outline](https://ast-grep.github.io/blog/ast-grep-outline)
+- [Antão Almada: Code Agent Knowledge Graphs](https://antaoalmada.dev/posts/Code-Agent-Knowledge-Graphs)
+- [Repowise: Best code graph MCP servers](https://repowise.dev/blog/comparisons/best-code-graph-mcp-servers) (materiał dostawcy)
+- Do dalszej lektury, niewykorzystane jako dowód liczb: [grep vs LSP harness](https://www.agentconnect.md/blog/grep-beat-lsp-harness), [Particula](https://particula.tech/blog/semantic-code-search-vs-grep-coding-agents), [yage.ai](https://yage.ai/share/why-coding-agents-still-use-grep-en-20260327.html), [wątek r/ClaudeCode „Is grep enough?”](https://www.reddit.com/r/ClaudeCode/comments/1ujnpy6/is_grep_enough_code_navigation_for_agents_measured) (⚠️ treści wątku nie udało się pobrać przy weryfikacji)

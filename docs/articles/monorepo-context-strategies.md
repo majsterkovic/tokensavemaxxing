@@ -1,39 +1,31 @@
 ---
 title: "Strategie Kontekstu w Monorepo i Multi-Repo"
-description: "Strategie Kontekstu w Monorepo i Multi-Repo"
+description: "Jak ograniczać stale ładowany kontekst w monorepo: podfoldery, reguły scope'owane i ładowanie na żądanie."
 ---
 
-Synteza analiz inżynierskich: Ivan Magda ("Fixing 40k CLAUDE.md warning in monorepo"), Matthew Wong ("Context engineering in monorepo AI agents") oraz wątków forum Cursora dotyczących środowisk multi-root.
-
----
-
-## 1. Patologie Dużych Środowisk (Monorepo & Multi-Root)
-
-Praca agenta w monorepo lub z kilkoma powiązanymi repozytoriami (np. `app/`, `web/`, `e2e/`) w jednym oknie IDE rodzi specyficzne, kosztowne problemy:
-
-### Problem 1: Globalny wyciek reguł w Multi-Root Workspace (Błąd Cursora 155477)
-W Cursorze, gdy otworzysz Multi-Root Workspace zawierający 3 repozytoria, pliki `AGENTS.md` i reguły `alwaysApply: true` z **każdego** repozytorium ładują się globalnie do każdej sesji.
-- Rezultat: Sesja dotycząca prostego buga w CSS we frontendzie ładuje reguły bazy danych, workerów backendowych i testów e2e.
-- Skutek: Natychmiastowe przekroczenie limitu 3000 tokenów reguł bazowych i degradacja precyzji.
-
-### Problem 2: Zagnieżdżone `AGENTS.md` (Błąd Cursora 3.6 - 3.10)
-Wersje Cursora 3.6+ potrafią skanować drzewo w dół i ładować zagnieżdżone `AGENTS.md` ze wszystkich podfolderów (zgłoszony przypadek: 600 000 tokenów samych reguł wciągniętych na starcie sesji).
-
-### Problem 3: Otwarty Workspace Root bez Repo Gita
-Jeśli rootem workspace w Cursorze jest nadrzędny folder, który sam nie jest repozytorium gita (np. folder ze skrótami do 3 repozytoriów), Agent Glob `**/*` ignoruje pliki `.gitignore` poszczególnych repozytoriów.
-- Skanowanie potrafi zawiesić agenta na 3-5 minut i wczytać 3 000 plików ze skompilowanymi assetami zamiast 80 plików źródłowych.
+Synteza trzech poradników: [Ivan Magda](https://ivanmagda.dev/posts/fixing-40k-claude-md-warning-monorepo), [Matthews Wong](https://www.matthewswong.com/en/blog/context-engineering-monorepo-ai-agents) i [Start Debugging](https://startdebugging.net/2026/05/how-to-structure-a-monorepo-so-claude-codes-context-stays-small). Dotyczą głównie **Claude Code**. Zachowania innych narzędzi sprawdź w ich dokumentacji.
 
 ---
 
-## 2. Sprawdzone Wzorce Rozwiązań
+## 1. Co się ładuje i kiedy (Claude Code)
 
-### Wzorzec A: Otwieranie Podfolderu (Folder-Scoped Workspace)
-Najprostsza i najbardziej radykalna optymalizacja:
-- Zamiast otwierać nadrzędny katalog monorepo (`company-all/`), otwórz konkretny podfolder roboczy (`company-all/apps/web/`).
-- **Efekt**: Reguły z innych modułów fizycznie nie istnieją w kontekście. Indeksowanie trwa 4 minuty zamiast 15 minut. Zużycie pamięci RAM spada z 5.5 GB do 2.8 GB.
+- `CLAUDE.md` z katalogu startowego i katalogów nadrzędnych ładują się w całości na starcie sesji.
+- `CLAUDE.md` z podkatalogów ładują się **dopiero wtedy, gdy Claude czyta tam plik**.
+- Importy `@plik` porządkują treść, ale nie zmniejszają stałego kontekstu.
+- Odczyty wykonane przez subagenta nie trafiają do głównego okna.
+- [Dokumentacja Claude Code](https://code.claude.com/docs/en/memory) zaleca **mniej niż 200 linii na plik `CLAUDE.md`**.
 
-### Wzorzec B: Reguły Scope'owane przez Frontmatter `globs`
-W środowiskach wspierających reguły `.mdc` (Cursor) nigdy nie umieszczaj reguł technologicznych w `alwaysApply: true`. Używaj precyzyjnych masek:
+### Przykład z praktyki
+Magda zmniejszył stale ładowaną treść `CLAUDE.md` w monorepo z około **92 tys. do 25 tys. znaków (−73%)**, przenosząc szczegóły do dokumentów czytanych na żądanie. To przypadek jednego projektu. Autor ocenia, że przestrzeganie instrukcji się poprawiło, ale nie podaje pomiaru.
+
+---
+
+## 2. Wzorce
+
+### Wzorzec A: start w podfolderze
+Uruchamiaj agenta w podfolderze, który edytujesz (`apps/web/`), i trzymaj mały plik instrukcji w roocie. Pamiętaj, że instrukcje z katalogów nadrzędnych nadal się ładują. W Claude Code można je pominąć ustawieniem `claudeMdExcludes`.
+
+### Wzorzec B: reguły scope'owane przez `globs` (Cursor)
 
 ```markdown
 ---
@@ -41,10 +33,9 @@ description: Reguły dla modułu rozliczeniowego i backendu
 globs: ["services/billing/**", "packages/db/**"]
 ---
 ```
-Taka reguła ma **zerowy koszt tokenowy** na początku sesji. Ładuje się do pamięci tylko wtedy, gdy agent otwiera lub modyfikuje plik pasujący do maski `globs`.
+Treść takiej reguły dołącza się przy pracy z pasującymi plikami, więc zwykle nie obciąża innych sesji. Sprawdź w swojej wersji Cursora, kiedy faktycznie się ładuje ([dokumentacja reguł](https://cursor.com/docs/rules)). W Claude Code podobną rolę pełnią reguły ze ścieżkami w `.claude/rules/`.
 
-### Wzorzec C: Zabezpieczenie `.ignore` w roocie
-Jeżeli musisz pracować w jednym oknie na wielu projektach, w roocie nadrzędnym utwórz plik `.ignore` w składni kompatybilnej z ripgrep:
+### Wzorzec C: plik `.ignore` w roocie
 ```
 node_modules/
 .venv/
@@ -53,4 +44,24 @@ build/
 .next/
 *.generated.*
 ```
-Ripgrep (używany przez agenta pod maską do grep/glob) respektuje plik `.ignore` nawet wtedy, gdy parser gita w IDE ulegnie awarii.
+`ripgrep` respektuje `.ignore`. Czy wyszukiwarka danego harnessa używa `ripgrep` z tym ustawieniem, trzeba sprawdzić.
+
+---
+
+## 3. Zgłoszenia o Cursorze — ⚠️ niezweryfikowane
+
+Wcześniejsza wersja przedstawiała poniższe punkty jako fakty. **Sprawdzone źródła ich nie potwierdzają**, więc traktuj je jako hipotezy do odtworzenia:
+
+- ładowanie reguł `alwaysApply: true` i `AGENTS.md` ze wszystkich repozytoriów w multi-root workspace,
+- ładowanie wielu zagnieżdżonych `AGENTS.md` w wersjach 3.6+,
+- pomijanie `.gitignore` podrzędnych repozytoriów, gdy root workspace nie jest repozytorium git.
+
+Usunięto też liczby bez znalezionego źródła (rozmiar załadowanych reguł, czas indeksowania i zużycie RAM, numer błędu na forum).
+
+## Źródła
+
+- [Ivan Magda: Fixing the 40k CLAUDE.md warning in a monorepo](https://ivanmagda.dev/posts/fixing-40k-claude-md-warning-monorepo)
+- [Matthews Wong: Context engineering for AI coding agents in a monorepo](https://www.matthewswong.com/en/blog/context-engineering-monorepo-ai-agents)
+- [Start Debugging: How to structure a monorepo](https://startdebugging.net/2026/05/how-to-structure-a-monorepo-so-claude-codes-context-stays-small)
+- [Cursor Docs: Rules](https://cursor.com/docs/rules)
+- [Claude Code Docs: Memory](https://code.claude.com/docs/en/memory)

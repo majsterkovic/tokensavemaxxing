@@ -39,7 +39,7 @@ opencode
 
 ## 3. Integracja z Modelami Lokalnymi (0 Tokenów API)
 
-OpenCode pozwala na skonfigurowanie lokalnego backendu kompatybilnego z OpenAI API (np. Ollama działająca na WSL):
+OpenCode pozwala na skonfigurowanie lokalnego backendu kompatybilnego z OpenAI API (np. Ollama działająca na WSL). Poniższy JSON to przykład ⚠️ niezweryfikowane — właściwy schemat sprawdź w dokumentacji OpenCode:
 
 ```json
 {
@@ -67,6 +67,6 @@ Dzięki temu możesz prowadzić całą fazę planowania i generowania kodu **w 1
 ---
 
 ## 5. Kiedy Używać
-- Praca w terminalu z możliwością płynnego przełączania się między Claude 3.7, GPT-4o a lokalnym Qwenem w Ollamie.
+- Praca w terminalu z możliwością płynnego przełączania się między modelami chmurowymi a lokalnym Qwenem w Ollamie.
 - Projekty o ścisłych wymaganiach prywatności (przełączenie w całości na silnik lokalny).
 - Zautomatyzowane pipeline'y w GitHub Actions (`opencode github run`).

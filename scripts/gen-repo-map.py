@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
 """
 gen-repo-map.py — Deterministyczny generator mapy repozytorium bez używania tokenów AI.
-Skanuje pliki źródłowe (Python, TypeScript, JavaScript) i generuje zwięzłą mapę symboli
-oraz eksportów, idealną do pasywnego kontekstu agenta (.cursor/REPO-MAP.md).
+Generuje listę nazw dla pasywnego kontekstu agenta (.cursor/REPO-MAP.md):
+- Python: publiczne funkcje i klasy najwyższego poziomu (moduł `ast`),
+- TypeScript/JavaScript: nazwy eksportów (wyrażenia regularne, to heurystyka, nie parser).
+Nie buduje grafu importów i nie wypisuje metod ani sygnatur.
 """
 
 import os
@@ -16,16 +18,23 @@ IGNORE_DIRS = {
     'coverage', '.venv', 'venv', '__pycache__', '.idea', '.vscode'
 }
 
-IGNORE_EXTENSIONS = {
+IGNORE_SUFFIXES = (
     '.map', '.min.js', '.min.css', '.png', '.jpg', '.jpeg', '.svg',
     '.gif', '.ico', '.pdf', '.zip', '.tar', '.gz', '.lock'
-}
+)
+
+# Komentarze i napisy w TS/JS. Napisy w ' i " nie przechodzą przez koniec linii,
+# więc samotny apostrof (np. w JSX) nie pochłonie reszty pliku.
+TS_NOISE = re.compile(
+    r'''//[^\n]*|/\*.*?\*/|"(?:\\.|[^"\\\n])*"|'(?:\\.|[^'\\\n])*'|`(?:\\.|[^`\\])*`''',
+    re.DOTALL,
+)
 
 def should_ignore(rel_path: Path) -> bool:
     for part in rel_path.parts:
         if part in IGNORE_DIRS or (part.startswith('.') and part != '.'):
             return True
-    if rel_path.suffix.lower() in IGNORE_EXTENSIONS:
+    if rel_path.name.lower().endswith(IGNORE_SUFFIXES):
         return True
     if 'generated' in rel_path.name.lower():
         return True
@@ -43,33 +52,34 @@ def parse_python_file(path: Path):
             elif isinstance(node, ast.ClassDef):
                 if not node.name.startswith('_'):
                     exports.append(f"class {node.name}")
-    except Exception:
-        pass
+    except (OSError, SyntaxError, ValueError) as error:
+        print(f"Ostrzeżenie: pominięto {path}: {error}", file=sys.stderr)
     return exports
 
 def parse_ts_js_file(path: Path):
     exports = []
     try:
         with open(path, 'r', encoding='utf-8', errors='ignore') as f:
-            content = f.read()
+            content = TS_NOISE.sub(' ', f.read())
         
         # Regex for standard and default exports
         patterns = [
             r'export\s+(?:async\s+)?function\s+([a-zA-Z0-9_$]+)',
             r'export\s+default\s+(?:async\s+)?function\s+([a-zA-Z0-9_$]+)',
-            r'export\s+class\s+([a-zA-Z0-9_$]+)',
+            r'export\s+(?:declare\s+)?(?:abstract\s+)?class\s+([a-zA-Z0-9_$]+)',
+            r'export\s+declare\s+(?:async\s+)?function\s+([a-zA-Z0-9_$]+)',
             r'export\s+default\s+class\s+([a-zA-Z0-9_$]+)',
-            r'export\s+(?:const|let|var)\s+([a-zA-Z0-9_$]+)',
+            r'export\s+(?:declare\s+)?(?:const|let|var)\s+(?!enum\b)([a-zA-Z0-9_$]+)',
             r'export\s+interface\s+([a-zA-Z0-9_$]+)',
             r'export\s+type\s+([a-zA-Z0-9_$]+)',
-            r'export\s+enum\s+([a-zA-Z0-9_$]+)',
+            r'export\s+(?:declare\s+)?(?:const\s+)?enum\s+([a-zA-Z0-9_$]+)',
         ]
         for p in patterns:
             for match in re.finditer(p, content):
                 exports.append(match.group(1))
 
         # Handle export { a, b, c as d }
-        block_pattern = r'export\s*\{([^}]+)\}'
+        block_pattern = r'export(?:\s+type)?\s*\{([^}]+)\}'
         for match in re.finditer(block_pattern, content):
             items = match.group(1).split(',')
             for item in items:
@@ -77,21 +87,23 @@ def parse_ts_js_file(path: Path):
                 if not item:
                     continue
                 parts = item.split()
+                if len(parts) > 1 and parts[0] == 'type' and parts[1] != 'as':
+                    parts = parts[1:]
                 if 'as' in parts:
                     as_idx = parts.index('as')
                     if as_idx + 1 < len(parts):
                         exports.append(parts[as_idx + 1])
                 elif parts:
                     exports.append(parts[0])
-    except Exception:
-        pass
+    except OSError as error:
+        print(f"Ostrzeżenie: pominięto {path}: {error}", file=sys.stderr)
     return sorted(list(set(exports)))
 
 def print_help():
     print("""Użycie: python3 scripts/gen-repo-map.py [KATALOG_PROJEKTU]
 
-Generuje deterministyczną mapę symboli i eksportów z plików Python, TS i JS.
-Wynik jest optymalnym indeksem do umieszczenia w .cursor/REPO-MAP.md.
+Generuje listę symboli Pythona (ast) i eksportów TS/JS (regex).
+Wynik można umieścić w .cursor/REPO-MAP.md.
 
 Argumenty:
   KATALOG_PROJEKTU    Ścieżka do katalogu głównego projektu (domyślnie: bieżący katalog)
@@ -116,10 +128,10 @@ def main():
     files_found = 0
     for root, dirs, files in os.walk(root_dir):
         # Filter directories in-place (relative filtering)
-        dirs[:] = [
+        dirs[:] = sorted(
             d for d in dirs
             if d not in IGNORE_DIRS and not (d.startswith('.') and d != '.')
-        ]
+        )
         for file in sorted(files):
             file_path = Path(root) / file
             rel_path = file_path.relative_to(root_dir)

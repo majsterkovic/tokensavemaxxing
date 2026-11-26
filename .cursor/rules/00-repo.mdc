@@ -8,5 +8,5 @@ alwaysApply: true
 - Rola repozytorium: Baza wiedzy, playbooks, artykuły i narzędzia optymalizacji tokenowej agentów.
 - Stack technologiczny: Markdown (GFM), Python 3 (standard lib, AST), Bash (POSIX).
 - Kodowanie i formatowanie: Zawsze UTF-8, ścisłe zachowanie integralności linków relatywnych.
-- Mapa repozytorium: Przed eksploracją sprawdź `.cursor/REPO-MAP.md` oraz indeksy `README.md` w podkatalogach.
+- Mapa repozytorium: Przed eksploracją sprawdź `.cursor/REPO-MAP.md` oraz pliki `index.md` w podkatalogach `docs/`.
 - Higiena kontekstu: Zakaz dodawania niezamierzonych binarek, AI slop i rozwlekłych bloków kodu w regułach.

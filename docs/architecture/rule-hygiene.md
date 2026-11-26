@@ -22,7 +22,7 @@ Jeśli regułę można wymusić deterministycznym narzędziem w pipeline:
 -> **Wymuś to narzędziem, a nie regułą w promptach LLM.** Szkoda budżetu uwagi modelu na pilnowanie średników czy sortowania importów.
 
 ### Prawo 3: Zasada Ścisłego Budżetu (Strict Token Budget)
-Całkowity rozmiar wszystkich reguł ładowanych na stałe w każdej sesji (`alwaysApply: true`) **nie może przekraczać 2 000 tokenów** (optymalnie < 800 tokenów).
+Całkowity rozmiar wszystkich reguł ładowanych na stałe w każdej sesji (`alwaysApply: true`) w tym repozytorium **nie powinien przekraczać 2 000 tokenów** (najlepiej < 800). To umowny budżet, nie próg wyznaczony w badaniu — zob. [Przeciążenie Instrukcjami](/tokensavemaxxing/articles/instruction-following-decay/).
 
 ---
 
@@ -32,6 +32,6 @@ Całkowity rozmiar wszystkich reguł ładowanych na stałe w każdej sesji (`alw
 |---|---|---|
 | **Wklejanie bloków kodu (80 linii)** | Zjada setki tokenów, deaktualizuje się przy zmianie bibliotek | Wskaźnik tekstowy: *"Wzoruj się na `src/api/auth.ts`"* |
 | **Pozytywne frazesy** (*"Pisz czysty kod, bądź pomocny"*) | Zero wartości decyzyjnej, rozcieńcza uwagę | Konkretne zakazy negatywne: *"Nigdy nie używaj `any`"* |
-| **Zagnieżdżone `AGENTS.md`** | W Cursorze 3.6-3.10 potrafią wciągnąć 600k tokenów | Pojedynczy plik `.mdc` z polem `globs` |
-| **Używanie przestarzałego `.cursorrules`** | Po cichu ignorowany w trybie Agent | Migracja do `.cursor/rules/*.mdc` |
+| **Wiele zagnieżdżonych `AGENTS.md`** | ⚠️ Niezweryfikowane zgłoszenia: niektóre wersje Cursora mogą ładować je wszystkie. Sprawdź w widoku kontekstu | Pliki `.mdc` z polem `globs` |
+| **Używanie `.cursorrules`** | Starszy format; sprawdzona [dokumentacja reguł](https://cursor.com/docs/rules) go nie wymienia | Migracja do `.cursor/rules/*.mdc` |
 | **Ignorowanie maski `globs`** | Wszystkie reguły ładują się zawsze, zjadając kontekst | Przypisywanie reguł do rozszerzeń: `globs: ["**/*.tsx"]` |

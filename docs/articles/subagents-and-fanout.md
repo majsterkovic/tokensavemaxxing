@@ -1,88 +1,58 @@
 ---
 title: "Subagenty, Fan-Out i Izolacja Kontekstu Badawczego"
-description: "Wzorce izolacji kontekstu badawczego: subagenty Scout/Builder, równoległy fan-out i redukcja kosztów sesji głównej."
+description: "Wzorce izolacji kontekstu badawczego: subagenty Scout/Builder, równoległy fan-out i ich koszty."
 ---
 
-Analiza wzorców architektonicznych orkiestracji subagentów w nowoczesnych harnessach deweloperskich (Claude Code 2.1+, Google Antigravity Swarm, Cursor Subagents).
-
----
-
-## 1. Dlaczego Główny Agent Nie Powinien Eksplorować Samodzielnie?
-
-W typowym flow deweloperskim zadanie składa się z dwóch faz:
-1. **Faza badawcza (Exploration & Triage)**: Przeszukiwanie bazy kodu, grep po symbolach, odczytywanie 10-30 plików, lokalizacja definicji i miejsc użycia.
-2. **Faza implementacji i testów (Execution & Verification)**: Precyzyjna edycja 2-3 plików, uruchomienie testów, formatowanie.
-
-### Problem monoseptycznego agenta (Single Context Pollution):
-Gdy jeden agent wykonuje obie fazy w tym samym wątku:
-- Treść wszystkich 30 odczytanych w fazie badawczej plików (często 8 000 - 25 000 tokenów) pozostaje na zawsze w historii rozmowy.
-- Każde kolejne pytanie użytkownika, każda poprawka linijki i każde wywołanie komendy w fazie implementacji musi re-transmitować cały ten historyczny zrzut.
-- Model w fazie edycji jest rozproszony niepotrzebnymi szczegółami z plików pobocznych, co drastycznie zwiększa prawdopodobieństwo regresji kodu.
+Opis wzorca orkiestracji subagentów. To **opracowanie autorskie**, nie wynik badania. O tym, że odczyty subagenta nie trafiają do głównego okna Claude Code, piszą też [Matthews Wong](https://www.matthewswong.com/en/blog/context-engineering-monorepo-ai-agents) i [Start Debugging](https://startdebugging.net/2026/05/how-to-structure-a-monorepo-so-claude-codes-context-stays-small).
 
 ---
 
-## 2. Kanoniczny Wzorzec: Subagent Badawczy (Read-Only Scout)
+## 1. Problem: eksploracja zostaje w historii
 
-Subagent działa w odrębnym, izolowanym procesie z własnym, czystym oknem kontekstowym. Po zakończeniu pracy zwraca do agenta głównego jedynie syntetyczną konkluzję.
+Zadanie zwykle ma dwie fazy:
+1. **Badawczą:** grep po symbolach, odczyt wielu plików, szukanie użyć.
+2. **Implementacyjną:** edycja kilku plików i testy.
+
+Gdy wykonuje je jeden wątek, odczytane pliki zostają w historii (do czasu kompakcji) i są wysyłane w kolejnych turach.
+
+---
+
+## 2. Wzorzec: badawczy subagent tylko do odczytu
+
+Subagent pracuje w osobnym oknie kontekstowym i zwraca głównemu agentowi wnioski.
 
 ```
-                  ┌───────────────────────────────┐
-                  │         Agent Główny          │
-                  │   (Orkiestrator / Builder)    │
-                  └──────────────┬────────────────┘
-                                 │
-                   Zlecenie: "Znajdź powiązania X"
-                   (Wymóg: tylko wnioski i ścieżki)
-                                 │
-                                 ▼
-                  ┌───────────────────────────────┐
-                  │       Subagent Badawczy       │
-                  │ (Model: Flash / Haiku / Pro)  │
-                  │      Tryb: Read-Only          │
-                  │                               │
-                  │ Czyta: 35 plików (15k toków)  │
-                  │ Analizuje relacje w kodzie    │
-                  └──────────────┬────────────────┘
-                                 │
-                 Zwrot: Tylko wniosek (350 toków):
-                 - Pliki do zmiany: src/a.ts, src/b.ts
-                 - Uwaga na edge-case w linii 42
-                                 │
-                                 ▼
-                  ┌───────────────────────────────┐
-                  │         Agent Główny          │
-                  │  (Czysty kontekst, zero szumu,│
-                  │   natychmiastowa implementacja│
-                  └───────────────────────────────┘
+Agent główny ──zlecenie: „znajdź powiązania X”──→ Subagent (read-only)
+Agent główny ←── ścieżki, numery linii, wnioski ── czyta i analizuje pliki
 ```
 
-### Wyniki w liczbach:
-- **Tradycyjne podejście**: 6 100 tokenów wczytanych do historii głównej sesji.
-- **Z subagentem badawczym**: **420 tokenów** wstrzykniętych do głównej sesji (oszczędność >93% miejsca w oknie kontekstowym orkiestratora).
+### Co faktycznie oszczędza
+- Przykładowo (**liczby ilustracyjne, bez zapisanej metodyki**) zamiast 6100 tokenów odczytów do głównej sesji może trafić około 420 tokenów raportu.
+- To dotyczy **tylko głównego kontekstu**. Subagent sam zużywa tokeny: wczytuje własny prompt, narzędzia i te same pliki. **Łączne zużycie może być wyższe.**
+- Opłaca się, gdy eksploracja jest duża, a główna sesja długa. Przy małym zadaniu zwykle nie.
 
 ---
 
-## 3. Żelazna Reguła Komunikacji z Subagentem
+## 3. Kontrakt komunikacji (konwencja)
 
-> ⚠️ **ZAKAZ ZRZUCANIA EKSCERPTÓW KODU**
-> Subagent badawczy **nigdy nie może kopiować i wklejać fragmentów kodu** do swojej odpowiedzi końcowej.
+Domyślnie subagent zwraca **ścieżki z numerami linii i wnioski**, bez dużych zrzutów kodu. Krótki cytat jest uzasadniony, gdy od dokładnej treści zależy decyzja. Przed edycją agent główny czyta właściwy fragment sam.
 
-Jeśli subagent wklei 40 wyciętych bloków kodu, mechanizm oszczędzania zawodzi — płacisz za czytanie dwukrotnie, a historia sesji głównej zostaje zanieczyszczona.
-
-### Prawidłowy kontrakt zadania subagenta:
 ```text
-ZADANIE: Znajdź wszystkie wystąpienia funkcji validateSession() w serwisach backendowych.
+ZADANIE: Znajdź wszystkie wywołania validateSession() w serwisach backendowych.
 WYMÓG ODPOWIEDZI:
-1. Podaj listę dokładnych ścieżek z numerami linii (np. src/auth/guard.ts:84).
-2. Podaj 1-zdaniowe podsumowanie, jak wynik walidacji jest przetwarzany w danym miejscu.
-3. Kategoryczny zakaz wklejania bloków kodu i cytatów z plików.
+1. Dokładne ścieżki z numerami linii (np. src/auth/guard.ts:84).
+2. Jedno zdanie o tym, jak wynik walidacji jest używany w danym miejscu.
+3. Bez dużych bloków kodu; zaznacz, czego nie udało się sprawdzić.
 ```
 
 ---
 
-## 4. Wybór Modeli: Arbitraż Kosztowy
+## 4. Wybór modelu
 
-Eksploracja kodu i przeszukiwanie plików to zadania o niskiej złożoności rozumowania (pattern matching i wyszukiwanie referencji).
-- Do roli subagenta badawczego idealnie nadają się modele szybkie i tanie: **Gemini 2.0 Flash**, **Claude 3.5 Haiku**.
-- Są od **10× do 25× tańsze** od modeli frontier (Sonnet, Pro, Opus, o3), a wykonują zadanie w ułamku sekundy.
-- Model klasy frontier (Sonnet, Opus, Pro) rezerwujesz wyłącznie dla **agenta głównego** na czas podejmowania decyzji architektonicznych i precyzyjnej modyfikacji kodu.
+Proste wyszukiwanie można zlecić tańszemu modelowi (np. klasy Haiku lub Flash). Różnicę ceny sprawdź w aktualnym cenniku. Tańszy model może coś przeoczyć, więc przy zadaniach wymagających rozumowania nie oszczędzaj na modelu. Przykład delegacji masowego czytania opisuje [studium Spotify](/tokensavemaxxing/articles/spotify-shunt-and-portal/).
+
+## Źródła
+
+- [Matthews Wong: Context engineering for AI coding agents in a monorepo](https://www.matthewswong.com/en/blog/context-engineering-monorepo-ai-agents)
+- [Start Debugging: How to structure a monorepo](https://startdebugging.net/2026/05/how-to-structure-a-monorepo-so-claude-codes-context-stays-small)
+- [Spotify Engineering: Portal by Spotify](https://engineering.atspotify.com/2026/09/portal-by-spotify-cut-my-claude-code-token-usage-by-90)

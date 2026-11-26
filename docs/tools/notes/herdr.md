@@ -32,6 +32,8 @@ W standardowym terminalu (bash/zsh):
 
 ## 3. Typowy Workflow z Herdr
 
+> ⚠️ niezweryfikowane: składnię poniższych komend sprawdź w repozytorium narzędzia.
+
 ```bash
 # Uruchomienie sesji wewnątrz Herdr Core
 hc new --name "billing-refactor" -- claude
@@ -47,5 +49,5 @@ hc attach billing-refactor
 
 ## 4. Rola w Architekturze Tokensavemaxxing
 
-1. **Ochrona przed powtarzaniem pracy**: Przerwany agent w tradycyjnym terminalu wymaga uruchomienia od nowa, co oznacza ponowne przesłanie całego kontekstu i zapłacenie za te same tokeny dwukrotnie.
+1. **Ochrona przed powtarzaniem pracy**: Przerwany agent w tradycyjnym terminalu może wymagać powtórzenia części pracy i ponownego zużycia tokenów (wiele harnessów pozwala jednak wznowić zapisaną sesję).
 2. **Rozdzielenie zadań długodystansowych**: Długi refaktoring lub generowanie raportów puszczasz w tle w Herdrze, pracując równolegle nad innym zadaniem w głównym oknie.

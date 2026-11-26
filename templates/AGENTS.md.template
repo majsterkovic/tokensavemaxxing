@@ -1,6 +1,6 @@
 # AGENTS.md — Skrócony Kontrakt i Indeks Bazy Kodu
 
-> Plik ładowany do pasywnego kontekstu agenta (~8KB). Zastępuje dynamiczne błądzenie po repozytorium.
+> Plik ładowany do pasywnego kontekstu agenta (trzymaj go krótkim). Daje agentowi punkt startowy do eksploracji; nie zastępuje czytania kodu.
 
 ## Komendy Deweloperskie
 - Build: `pnpm build`
@@ -14,9 +14,12 @@
 - `src/db/` — Schematy bazy danych i zapytania repozytoriów.
 - Obsługa błędów: Wszystkie funkcje serwisowe zwracają typ `Result<T, AppError>`.
 
-## Skrócona Mapa Symboli (Generowana przez scripts/gen-repo-map.py)
+## Skrócona Mapa Symboli (format wyjścia scripts/gen-repo-map.py; przykład)
 ```text
-src/api/auth/session.ts | exports: createSession, verifySession | kind: route-handler
-src/services/billing.ts | exports: calculateInvoice, processPayment | kind: service
-src/db/client.ts        | exports: db, pool | kind: database
+src/api/auth/session.ts
+  exports: createSession, verifySession
+src/services/billing.ts
+  exports: calculateInvoice, processPayment
+src/db/client.ts
+  exports: db, pool
 ```

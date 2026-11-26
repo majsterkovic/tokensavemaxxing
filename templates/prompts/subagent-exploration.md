@@ -11,5 +11,6 @@ ZASADY:
 2. Odpowiedz w następującym formacie:
    - Lista plików i dokładnych numerów linii (np. src/auth/guard.ts:45)
    - 1-zdaniowe wyjaśnienie roli tego wywołania
-3. ⚠️ BEZWZGLĘDNY ZAKAZ WKLEJANIA BLOKÓW KODU I CYTATÓW Z PLIKÓW. Nie marnuj tokenów na zrzuty kodu.
+3. Domyślnie nie wklejaj bloków kodu. Krótki cytat (kilka linii) dodaj tylko wtedy, gdy od jego dokładnej treści zależy wniosek.
+4. Napisz, czego nie udało się sprawdzić i które wnioski są przypuszczeniem.
 ```

@@ -9,4 +9,4 @@ alwaysApply: true
 - Menedżer pakietów: wyłącznie `pnpm` (nigdy `npm install` ani `yarn`).
 - Mapa repozytorium: przed rozpoczęciem eksploracji sprawdź `.cursor/REPO-MAP.md`.
 - Zakazane polecenia: nigdy nie uruchamiaj skryptów seedujących bazę produkcyjną ani komend z flagą `--force`.
-- Wzorce architektoniczne: wzoruj się na strukturze modułów w `src/modules/core/`.
+- Wzorce architektoniczne: wzoruj się na strukturze modułów w `<KATALOG_WZORCOWEGO_MODUŁU>` (uzupełnij po skopiowaniu szablonu).

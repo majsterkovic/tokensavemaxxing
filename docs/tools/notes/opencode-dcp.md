@@ -3,7 +3,7 @@ title: "Notatka Narzędziowa: Dynamic Context Pruning (`Tarquinen/opencode-dynam
 description: "Notatka Narzędziowa: Dynamic Context Pruning (`Tarquinen/opencode-dynamic-context-pruning`)"
 ---
 
-> **Rola w ekosystemie**: Wtyczka do OpenCode (`@tarquinen/opencode-dcp`), która w locie (w locie przed wysłaniem do LLM) usuwa martwe i powtarzające się fragmenty historii bez niszczenia logów sesji na dysku.
+> **Rola w ekosystemie**: Wtyczka do OpenCode (`@tarquinen/opencode-dcp`), która w locie, przed wysłaniem do LLM, usuwa martwe i powtarzające się fragmenty historii bez niszczenia logów sesji na dysku.
 
 ---
 
@@ -44,6 +44,6 @@ opencode plugin add --global @tarquinen/opencode-dcp@latest
 
 ## 4. Wpływ na Tokensavemaxxing
 
-- Pozwala prowadzić **długie sesje bez degradacji uwagi modelu**.
-- Oszczędza **30% do 65% tokenów wejściowych** w sesjach przekraczających 10 tur.
+- Może pomóc w prowadzeniu długich sesji; nie gwarantuje braku degradacji uwagi, a agresywne przycinanie może usunąć potrzebne informacje.
+- Oszczędność **30–65% tokenów wejściowych** w sesjach powyżej 10 tur: ⚠️ niezweryfikowane, bez źródła i metodyki. Zmiana wcześniejszej historii może też unieważniać prompt cache.
 - Zapewnia pełną zgodność z zasadą nienaruszalności logów audytowych — programista w każdej chwili może przejrzeć pełną, nieobciętą historię na dysku.

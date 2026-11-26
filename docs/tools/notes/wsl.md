@@ -10,7 +10,7 @@ description: "Konfiguracja WSL (Windows Subsystem for Linux) pod kątem wydajno�
 ## 1. Złota Zasada Wydajności WSL (Krytyczna dla Tokensavemaxxing)
 
 > ⚠️ **BEZWZGLĘDNY NAKAZ: TRZYMAJ KOD W `/home/mariusz/...`**
-> Dostęp do plików systemu Windows przez ścieżkę `/mnt/c/...` z poziomu WSL korzysta z mostka 9P. Powoduje to **katastrofalny spadek wydajności I/O (nawet 10× - 20× wolniejszy git status, ripgrep i npm install)**.
+> Dostęp do plików systemu Windows przez ścieżkę `/mnt/c/...` z poziomu WSL korzysta z mostka 9P. Powoduje to **wyraźny spadek wydajności I/O** dla git, ripgrep i npm install ([dokumentacja Microsoft](https://learn.microsoft.com/en-us/windows/wsl/filesystems) zaleca trzymać pliki w tym systemie, w którym pracujesz). Skala 10–20× — ⚠️ niezweryfikowane.
 
 - **Dobra ścieżka**: `/home/mariusz/projekty/moj-kod` (natywny linuksowy system plików ext4).
 - **Zła ścieżka**: `/mnt/c/Users/mariusz/Desktop/moj-kod`.
@@ -58,5 +58,5 @@ WSL2 natywnie obsługuje akcelerację GPU z poziomu Linuksa:
 ---
 
 ## 4. Dlaczego WSL Jest Kluczem do Sukcesu Agentów?
-1. **Natywny ripgrep i find**: Wyszukiwanie symboli w tysiącach plików trwa poniżej 50 ms.
+1. **Natywny ripgrep i find**: Wyszukiwanie symboli w tysiącach plików jest zwykle bardzo szybkie (czas poniżej 50 ms — ⚠️ niezweryfikowane, zależy od repozytorium).
 2. **Spójne środowisko CLI**: Wszystkie narzędzia (Claude Code, OpenCode, Herdr, Python, Docker) działają bez emulatorów i problemów ze ścieżkami Windowsa (backslashes `\`).

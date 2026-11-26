@@ -10,7 +10,7 @@ Procedura lokalizacji i usuwania trudnych błędów oraz anomalii regresyjnych b
 ## 1. Antywzorzec: "Wklejanie 500 linii stack trace"
 
 Gdy wklejasz do agenta cały zrzut konsoli z 500 liniami stack trace'a:
-- 80% to wewnętrzne ramki wywołań bibliotek z `node_modules`.
+- Duża część to zwykle wewnętrzne ramki wywołań bibliotek z `node_modules`.
 - Agent traci orientację w gąszczu identyfikatorów i zaczyna sugerować losowe zmiany w bibliotekach zewnętrznych.
 
 ### Wzorzec: Precyzyjna Ekstrakcja
@@ -35,7 +35,7 @@ read_file(path="src/services/payment.ts", start_line=120, end_line=160)
 ### Krok 3: Napisanie Testu Reprodukującego (Failing Test)
 Zanim jakakolwiek linijka kodu źródłowego zostanie zmieniona:
 - Tworzony jest minimalistyczny test jednostkowy, który odtwarza błąd i w tym momencie **nie przechodzi (czerwony)**.
-- Dzięki temu mamy 100% pewności, że rozumiemy przyczynę błędu, a nie tylko maskujemy objawy.
+- Dzięki temu mamy powtarzalny dowód błędu i sposób sprawdzenia poprawki. Sam czerwony test nie dowodzi jeszcze, że znamy przyczynę.
 
 ### Krok 4: Atomowa Poprawka i Walidacja (Green Test)
 - Edycja właściwej linijki kodu.

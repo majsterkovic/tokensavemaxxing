@@ -9,4 +9,3 @@ globs: ["**/*.ts", "**/*.tsx"]
 - Walidacja danych na brzegach: Zawsze używaj schematów Zod przy wejściu do API i deserializacji.
 - Eksporty: Preferuj nazwane eksporty (named exports) zamiast eksportów domyślnych (default export).
 - Obsługa błędów: W operacjach domenowych zwracaj `Result<T, E>` zamiast rzucania surowych wyjątków.
-- Wzorzec implementacji serwisu: wzoruj się na `src/services/user.service.ts`.

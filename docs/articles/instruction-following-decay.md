@@ -1,64 +1,75 @@
 ---
-title: "Równomierna Degradacja Jakości Instrukcji (Badania HumanLayer)"
-description: "Równomierna Degradacja Jakości Instrukcji (Badania HumanLayer)"
+title: "Przeciążenie Instrukcjami: Jak Pisać Krótkie Reguły"
+description: "Co o długości CLAUDE.md i liczbie instrukcji pisze HumanLayer oraz które zasady są konwencją tego repozytorium."
 ---
 
-Analiza badań laboratoryjnych przeprowadzonych przez HumanLayer (2026) nad zachowaniem modeli frontier (Claude 3.5/3.7 Sonnet, GPT-4o, Gemini 1.5/2.0 Pro) przy rosnącym wolumenie instrukcji systemowych i reguł workspace.
+Punktem wyjścia jest post [HumanLayer: Writing a good CLAUDE.md](https://www.humanlayer.dev/blog/writing-a-good-claude-md). To **poradnik, nie własne badanie** autorów.
 
----
-
-## 1. Mit "Lost in the Middle" w Regułach Systemowych
-
-Przez długi czas panowało przekonanie, że modele ignorują głównie instrukcje umieszczone w środku długiego promptu systemowego ("efekt u-kształtnej uwagi"). Wielu inżynierów próbowało obchodzić to, umieszczając kluczowe reguły na samym początku lub na samym końcu pliku `.cursorrules` lub `.mdc`.
-
-Badanie HumanLayer obaliło tę tezę w odniesieniu do precyzyjnych reguł inżynieryjnych:
-- **Degradacja jest równomierna (Uniform Instruction Degradation)**.
-- Zwiększenie liczby reguł z 5 do 25 nie sprawia, że model "zapomina reguły 10-15". Sprawia, że model staje się **o kilkadziesiąt procent gorszy w stosowaniu KAŻDEJ pojedynczej reguły w pliku**, włączając w to regułę pierwszą i ostatnią.
-- Każda dodatkowa linijka instrukcji rozcieńcza wagę uwagi (attention weight budget) przydzielaną pozostałym wytycznym.
+:::caution[Korekta]
+Wcześniejsza wersja tej strony przypisywała HumanLayer badania laboratoryjne, tabelę „Compliance Rate” zależną od liczby tokenów i twardy limit 2000 tokenów. **Poradnik ich nie zawiera.** Zostały usunięte.
+:::
 
 ---
 
-## 2. Granice Budżetu Tokenowego dla Reguł Always-On
+## 1. Co mówi źródło
 
-HumanLayer zmierzyło współczynnik zgodności (Compliance Rate) w zależności od całkowitej liczby tokenów w regułach ładowanych na stałe (`alwaysApply: true`):
+- Wraz ze wzrostem **liczby instrukcji** modele gorzej ich przestrzegają. Według posta spadek jest **równomierny**, czyli nie dotyczy tylko nowszych instrukcji. HumanLayer opiera się tu na zewnętrznej pracy [arXiv:2507.11538](https://arxiv.org/abs/2507.11538).
+- Plik instrukcji powinien być **krótki i zawierać to, co dotyczy większości zadań**. Autorzy zalecają mniej niż 300 linii.
 
-| Objętość reguł Always-On | Compliance Rate (zgodność z regułami) | Zjawisko uboczne |
-|---|---|---|
-| **< 1000 tokenów (~15-30 linii)** | **94% - 98%** | Wysoka precyzja, deterministyczne zachowanie |
-| **1000 - 2000 tokenów** | **85% - 90%** | Akceptowalna stabilność, sporadyczne pominięcia |
-| **2000 - 4000 tokenów** | **65% - 75%** | Wyraźne gubienie konwencji, powrót do wzorców domyślnych |
-| **> 5000 tokenów** | **< 50%** | Halucynacje, ignorowanie zakazanych poleceń, chaos |
+### Co pokazuje sama praca (IFScale)
 
-### Wniosek: Twardy limit 2000 tokenów
-Całkowity budżet dla reguł ładowanych w każdej sesji (`alwaysApply: true`) **nie może przekraczać 2000 tokenów**. Optymalna wartość to **poniżej 800 tokenów**.
+- **Test:** od 10 do 500 instrukcji typu „użyj tego słowa” w zadaniu pisania raportu biznesowego; 20 modeli od siedmiu dostawców.
+- **Wynik:** przy 500 instrukcjach najlepsze modele osiągnęły **68%**.
+- **Kształt spadku zależy od modelu:** progowy (m.in. `gemini-2.5-pro` i `o3` utrzymywały niemal pełną skuteczność do co najmniej 150 instrukcji), liniowy albo wykładniczy.
+- **Kolejność ma znaczenie:** późniejsze instrukcje były częściej łamane. Ta przewaga wcześniejszych była zwykle największa przy **150–200** instrukcjach, a przy 300+ malała i błędy rozkładały się bardziej równomiernie.
 
----
+Streszczenie „spada równomiernie” jest więc **uproszczeniem**. Praca nie bada też agentów programistycznych ani plików `CLAUDE.md`.
 
-## 3. Pułapka "Inlining Code Examples"
-
-Jednym z najczęstszych błędów jest wklejanie do reguł całych bloków kodu jako "przykładów idealnego stylu" (np. 80-liniowy komponent Reacta z obsługą błędów):
-1. **Pali budżet uwagi**: Taki przykład zjada 600-1000 tokenów, nie wnosząc wiedzy abstrakcyjnej.
-2. **Starzeje się natychmiast**: Po pierwszej zmianie w bibliotekach lub architekturze projektu wklejony przykład staje się nieaktualny. Agent zaczyna uczyć się kodu legacy i próbuje narzucać go w nowym kodzie.
-3. **Lepsza alternatywa — wskaźnik symboliczny**:
-   Zamiast wklejać kod:
-   ```markdown
-   ❌ ZŁE:
-   Oto jak pisać endpoint:
-   import { z } from 'zod';
-   export async function POST(req: Request) { ...80 linii kodu... }
-
-   ✅ DOBRE:
-   Wzorce endpointów API: wzoruj się na strukturze w `src/api/auth/route.ts`.
-   ```
-   Agent odczyta ten plik tylko wtedy, gdy będzie go potrzebować, a wzorzec zawsze będzie zgodny z aktualnym stanem gałęzi gita.
+Twierdzenia dotyczą liczby instrukcji. Nie wynika z nich próg wyrażony w tokenach.
 
 ---
 
-## 4. Zasada Reaktywnego Dodawania Reguł
+## 2. Budżet tego repozytorium (konwencja)
 
-Reguła ma rację bytu tylko wtedy, gdy spełnia 3 warunki:
-1. **Agent realnie popełnił błąd w 2 niezależnych sesjach**.
-2. **Narzędzia deterministyczne (Linter, TypeScript compiler, Prettier) nie potrafią tego wymusić**. Jeśli błąd może wyłapać ESLint — skonfiguruj ESLinta, nie twórz reguły LLM.
-3. **Reguła ma postać negatywną lub jednoznacznego zakazu/nakazu**:
-   - Źle: *"Pamiętaj o dbaniu o czystość architektury i odpowiednie komentarze."* (zero informacji decyzyjnej).
-   - Dobrze: *"Nigdy nie używaj `any`. W plikach mutacji zawsze zwracaj `Result<T, AppError>`."*
+Skrypt `scripts/audit-context.sh` ostrzega powyżej **2000 tokenów** stałych instrukcji, a za wygodny cel przyjmujemy mniej niż 800. To **umowne progi**, które mają wymuszać zwięzłość, a nie zmierzone granice jakości. Skrypt podaje przybliżony przedział, nie wynik tokenizera.
+
+---
+
+## 3. Przykłady kodu w regułach
+
+Długie bloki kodu w stale ładowanych regułach (to zalecenie praktyczne):
+
+1. zajmują kontekst w każdej sesji,
+2. łatwo się dezaktualizują.
+
+Zamiast kopii kodu wskaż istniejący plik:
+
+```markdown
+❌ ZŁE:
+Oto jak pisać endpoint:
+import { z } from 'zod';
+export async function POST(req: Request) { ...80 linii kodu... }
+
+✅ DOBRE (ścieżka przykładowa, podaj plik istniejący w projekcie):
+Wzorce endpointów API: wzoruj się na `src/api/auth/route.ts`.
+```
+
+Wskazaną ścieżkę trzeba utrzymywać. Reguła z nieistniejącym plikiem wprowadza agenta w błąd.
+
+---
+
+## 4. Reaktywne dodawanie reguł (konwencja)
+
+Dodaj regułę, gdy:
+1. agent powtórzył błąd w co najmniej dwóch niezależnych sesjach,
+2. nie wymusi tego linter, kompilator ani formatter,
+3. da się ją zapisać konkretnie.
+   - Źle: *„Dbaj o czystość architektury.”*
+   - Dobrze: *„Nie używaj `any`. W plikach mutacji zwracaj `Result<T, AppError>`.”*
+
+Reguły dotyczące bezpieczeństwa i nieodwracalnych działań warto dodać od razu, bez czekania na powtórkę.
+
+## Źródła
+
+- [HumanLayer: Writing a good CLAUDE.md](https://www.humanlayer.dev/blog/writing-a-good-claude-md)
+- [arXiv:2507.11538](https://arxiv.org/abs/2507.11538) — *How Many Instructions Can LLMs Follow at Once?* (Jaroslawicz i in., 2025), praca przywoływana przez HumanLayer

@@ -36,40 +36,59 @@ else
 fi
 
 echo ""
-echo "=== ANALIZA REGUŁ .cursor/rules/ ==="
+echo "=== INSTRUKCJE ZAWSZE ŁADOWANE ==="
+echo "(dwa szacunki bez tokenizera: słowa*4/3 i bajty/4; wynik zależy od języka i modelu)"
 
-TOTAL_ALWAYS_WORDS=0
-if [ -d ".cursor/rules" ]; then
-    for rule in .cursor/rules/*.mdc; do
-        if [ -f "$rule" ]; then
-            NAME=$(basename "$rule")
-            WORDS=$(wc -w < "$rule")
-            # Proste oszacowanie: 1 słowo ~= 1.33 tokena
-            TOKENS=$(( WORDS * 4 / 3 ))
-            
-            IS_ALWAYS=$(grep -i -E "alwaysApply:[[:space:]]*true" "$rule" || true)
-            if [ -n "$IS_ALWAYS" ]; then
-                echo "🔴 [ALWAYS-ON] $NAME: ~$TOKENS tokenów ($WORDS słów)"
-                TOTAL_ALWAYS_WORDS=$(( TOTAL_ALWAYS_WORDS + WORDS ))
-            else
-                GLOBS=$(grep -i -E "globs:[[:space:]]*" "$rule" || true)
-                echo "🟢 [CONDITIONAL] $NAME ($GLOBS): ~$TOKENS tokenów (koszt startowy: 0)"
-            fi
-        fi
+# Umowny próg ostrzegawczy, nie wynik badań.
+BUDGET=2000
+TOTAL_WORDS=0
+TOTAL_BYTES=0
+SEEN=()
+
+add_always_on() {
+    local file="$1" label="$2" other words bytes
+    for other in "${SEEN[@]}"; do
+        # CLAUDE.md bywa dowiązaniem do AGENTS.md: nie licz dwa razy
+        if [ "$file" -ef "$other" ]; then return 0; fi
     done
-    
-    TOTAL_ALWAYS_TOKENS=$(( TOTAL_ALWAYS_WORDS * 4 / 3 ))
-    echo ""
-    echo "Łączny stały narzut Always-On reguł: ~$TOTAL_ALWAYS_TOKENS tokenów"
-    if [ "$TOTAL_ALWAYS_TOKENS" -gt 2000 ]; then
-        echo "🚨 ALARM: Przekroczono bezpieczny limit 2000 tokenów dla reguł Always-On!"
-        echo "   Jakość wykonywania instrukcji ulegnie mierzalnej degradacji (HumanLayer)."
-    else
-        echo "✅ Budżet reguł Always-On w normie (< 2000 tokenów)."
-    fi
+    SEEN+=("$file")
+    words=$(( $(wc -w < "$file") ))
+    bytes=$(( $(wc -c < "$file") ))
+    echo "🔴 [ALWAYS-ON] $label: ~$(( words * 4 / 3 )) / ~$(( bytes / 4 )) tokenów ($words słów, $bytes bajtów)"
+    TOTAL_WORDS=$(( TOTAL_WORDS + words ))
+    TOTAL_BYTES=$(( TOTAL_BYTES + bytes ))
+}
+
+for file in AGENTS.md CLAUDE.md .claude/CLAUDE.md; do
+    if [ -f "$file" ]; then add_always_on "$file" "$file"; fi
+done
+
+if [ -d ".cursor/rules" ]; then
+    while IFS= read -r rule; do
+        NAME="${rule#.cursor/rules/}"
+        if grep -qiE "^alwaysApply:[[:space:]]*true" "$rule"; then
+            add_always_on "$rule" "$NAME"
+        else
+            GLOBS=$(grep -iE "^globs:" "$rule" || true)
+            echo "🟢 [CONDITIONAL] $NAME ($GLOBS): ładowana warunkowo (opis może nadal zajmować kontekst)"
+        fi
+    done < <(find .cursor/rules -type f -name '*.mdc' | LC_ALL=C sort)
 else
     echo "ℹ️  Katalog .cursor/rules/ nie istnieje."
 fi
 
+LOW=$(( TOTAL_WORDS * 4 / 3 ))
+HIGH=$(( TOTAL_BYTES / 4 ))
+if [ "$LOW" -gt "$HIGH" ]; then SWAP=$LOW; LOW=$HIGH; HIGH=$SWAP; fi
+
 echo ""
+echo "Łączny stały narzut: od ~$LOW do ~$HIGH tokenów"
+if [ "$HIGH" -gt "$BUDGET" ]; then
+    echo "🚨 Górny szacunek przekracza umowny budżet $BUDGET tokenów. Sprawdź, co jest potrzebne w każdej sesji."
+else
+    echo "✅ Mieści się w umownym budżecie $BUDGET tokenów."
+fi
+
+echo ""
+echo "Nie są liczone: pliki importowane przez @, instrukcje z katalogu domowego i schematy narzędzi MCP."
 echo "Audyt zakończony."

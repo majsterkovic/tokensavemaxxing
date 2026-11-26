@@ -3,7 +3,7 @@ title: "Hierarchia Kontekstu (4-Warstwowy Model Pamięci Agenta)"
 description: "Hierarchia Kontekstu (4-Warstwowy Model Pamięci Agenta)"
 ---
 
-Formalny model warstwowego ładowania kontekstu, zapewniający równowagę między dostępnością wiedzy a dyscypliną budżetu tokenowego.
+Proponowany (autorski) model warstwowego ładowania kontekstu, zapewniający równowagę między dostępnością wiedzy a dyscypliną budżetu tokenowego.
 
 ---
 
@@ -17,9 +17,9 @@ Formalny model warstwowego ładowania kontekstu, zapewniający równowagę międ
 ├─────────────────────────────────────────────────────────────┤
 │  Warstwa 1: Pasywny Indeks Architektury (~1 500 tok)        │
 │  - .cursor/REPO-MAP.md (wygenerowany przez gen-repo-map.py) │
-│  - Eksporty, importy, sygnatury interfejsów                 │
+│  - Ścieżki i publiczne symbole (bez importów i sygnatur)    │
 ├─────────────────────────────────────────────────────────────┤
-│  Warstwa 2: Warunkowe Reguły Domenowe (Maski globs: 0 tok)  │
+│  Warstwa 2: Warunkowe Reguły Domenowe (Maski globs)         │
 │  - ts-conventions.mdc (gdy edytowany .ts)                   │
 │  - sql-rules.mdc (gdy edytowany plik migracji)              │
 ├─────────────────────────────────────────────────────────────┤
@@ -35,21 +35,21 @@ Formalny model warstwowego ładowania kontekstu, zapewniający równowagę międ
 
 ### Warstwa 0: Pasywne Reguły Bazowe (`alwaysApply: true`)
 - **Cel**: Wyznaczenie twardych granic operacyjnych i zakazów.
-- **Limit**: Ścisły budżet < 800 tokenów (max 25-30 linii tekstu).
+- **Limit (konwencja repo)**: budżet < 800 tokenów (max 25-30 linii tekstu).
 - **Zasada**: Zero wklejonych bloków kodu. Wyłącznie zwięzłe nakazy/zakazy i linki do plików wzorcowych.
 
 ### Warstwa 1: Pasywny Indeks Architektury
 - **Cel**: Wyeliminowanie operacji błądzenia i skanowania całego repozytorium.
 - **Limit**: 1 000 - 3 000 tokenów.
-- **Zasada**: Wyciąg z AST zawierający wyłącznie publiczne symbole. Zero ciał funkcji, zero implementacji.
+- **Zasada**: Wyłącznie publiczne symbole (Python: moduł `ast`; TS/JS: heurystyka regex). Zero ciał funkcji i implementacji.
 
 ### Warstwa 2: Warunkowe Reguły Domenowe (`globs`)
 - **Cel**: Wstrzykiwanie specyficznych konwencji tylko wtedy, gdy agent realnie dotyka powiązanych plików.
-- **Koszt na starcie sesji**: **Dokładnie 0 tokenów**.
+- **Koszt na starcie sesji**: treść reguły zwykle nie jest ładowana, dopóki nie pasuje plik; sprawdź to w widoku kontekstu swojego narzędzia.
 - **Zasada**: Precyzyjne maski ścieżek, unikanie masek zbyt szerokich typu `**/*`.
 
 ### Warstwa 3: Dynamiczny Odczyt na Żądanie (Lazy Loading)
 - **Cel**: Pobieranie szczegółowej dokumentacji tylko wtedy, gdy warunek logiczny jest spełniony.
 - **Zasada**: W regule umieszczasz jedynie trigger:
   > *"Przed utworzeniem nowej tabeli w bazie przeczytaj `docs/database-naming-conventions.md`"*.
-  Model sam podejmuje decyzję o odczytaniu pliku w odpowiednim momencie, oszczędzając miejsce w oknie w 90% pozostałych zadań.
+  Model sam podejmuje decyzję o odczytaniu pliku w odpowiednim momencie, dzięki czemu w pozostałych zadaniach plik nie zajmuje miejsca w oknie.

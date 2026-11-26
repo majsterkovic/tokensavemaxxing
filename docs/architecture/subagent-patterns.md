@@ -3,7 +3,7 @@ title: "Wzorce Projektowe Subagentów (Subagent Design Patterns)"
 description: "Wzorce Projektowe Subagentów (Subagent Design Patterns)"
 ---
 
-Katalog sprawdzonych wzorców koordynacji i delegowania pracy pomiędzy agentem głównym (orkiestratorem) a agentami pomocniczymi.
+Katalog wzorców koordynacji i delegowania pracy pomiędzy agentem głównym (orkiestratorem) a agentami pomocniczymi.
 
 ---
 
@@ -28,5 +28,5 @@ Stosowany przy zadaniach powtarzalnych na wielu niezależnych plikach (np. migra
 
 Stosowany do weryfikacji jakości przed zatwierdzeniem zmian:
 - Subagent Reviewer otrzymuje jedynie `git diff` oraz zestaw reguł jakościowych.
-- Nie zna historii wcześniejszej dyskusji i wątpliwości z sesji pisania kodu, dzięki czemu nie ulega uprzedzeniom poznawczym (zero confirmation bias).
+- Nie zna historii wcześniejszej dyskusji i wątpliwości z sesji pisania kodu, dzięki czemu jest mniej obciążony wcześniejszymi założeniami. Nie gwarantuje to wykrycia błędów ani braku stronniczości.
 - Zwraca surową ocenę: błędy logiczne, edge-cases, wycieki zasobów.

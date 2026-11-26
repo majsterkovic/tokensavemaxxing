@@ -12,7 +12,7 @@ Przewodnik po pomiarach telemetrycznych efektywności agentów, kalkulacji koszt
 Optymalizacja bez danych telemetrycznych prowadzi do błędnych decyzji (np. wycinania pożytecznych reguł architektonicznych, podczas gdy prawdziwym winowajcą był nieskonfigurowany serwer MCP albo niechcący odczytywany lockfile o wadze 500 KB).
 
 ### Jak zmierzyć stan bazowy:
-1. **Cursor 3.3+ -> Context Usage Breakdown**:
+1. **Cursor -> Context Usage Breakdown** (dostępność zależy od wersji):
    Otwórz sesję, w której agent realnie pracował przez kilkanaście tur (nie świeży czat).
    Sprawdź podział procentowy i tokenowy:
    - `Rules`: stały narzut reguł `.cursor/rules/*.mdc`.
@@ -34,20 +34,23 @@ Optymalizacja bez danych telemetrycznych prowadzi do błędnych decyzji (np. wyc
 ## 2. Główne Wskaźniki Efektywności (KPIs)
 
 1. **Liczba plików odczytanych na zadanie (Files Read per Task)**:
-   - Zdrowy wynik: **1 - 4 pliki** dla standardowego zadania / bugfixa.
-   - Stan patologiczny: **> 15 plików** (świadczy o braku mapy repozytorium i błądzeniu po kodzie).
+   - Orientacyjny cel (konwencja): **1 - 4 pliki** dla standardowego zadania / bugfixa.
+   - Sygnał do analizy: **> 15 plików** (możliwe błądzenie po kodzie).
 2. **Koszt tokenowy tury startowej (Turn 0 Token Baseline)**:
-   - Zdrowy wynik: **< 3 000 tokenów** (reguły + mapa repozytorium + podstawowe narzędzia).
-   - Stan patologiczny: **> 12 000 tokenów** (przeładowany kontekst przed napisaniem pierwszego słowa).
+   - Orientacyjny cel (konwencja): **< 3 000 tokenów** (reguły + mapa repozytorium + podstawowe narzędzia).
+   - Sygnał do analizy: **> 12 000 tokenów** (przeładowany kontekst przed napisaniem pierwszego słowa).
 3. **Wskaźnik sukcesu za pierwszym razem (First-Pass Accuracy)**:
    - Odsetek zadań rozwiązanych bez konieczności interwencji programisty i poprawek w kolejnych turach.
-   - Wdrożenie `.cursorignore` + pinning symboli podnosi ten wskaźnik z ~50% do **95%**.
+   - Wpływ `.cursorignore` czy pinowania symboli zmierz na stałym zestawie zadań (przed i po, kilka powtórzeń).
 
 ---
 
 ## 3. Zautomatyzowany Audyt Lokalny: `scripts/audit-context.sh`
 
 W katalogu `scripts/` znajduje się skrypt powłoki, który:
-- Zlicza liczbę tokenów we wszystkich plikach reguł `.cursor/rules/`.
-- Sprawdza obecność plików `.cursorignore` oraz `.ignore`.
-- Ostrzega, jeśli całkowity rozmiar reguł ładowanych na stałe przekracza bezpieczny próg 2 000 tokenów.
+- szacuje tokeny instrukcji ładowanych na stałe: `AGENTS.md`, `CLAUDE.md`, `.claude/CLAUDE.md` oraz reguł `alwaysApply: true` (także w podfolderach),
+- podaje przedział z dwóch heurystyk (słowa × 4/3 oraz bajty / 4) — to nie jest wynik tokenizera,
+- sprawdza obecność plików `.cursorignore` oraz `.ignore`,
+- ostrzega po przekroczeniu umownego budżetu 2 000 tokenów.
+
+Nie liczy plików z `@import`, instrukcji z katalogu domowego ani definicji narzędzi MCP.

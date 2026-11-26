@@ -41,8 +41,8 @@ T3 Code łączy się bezpośrednio z Twoimi kluczami API (Anthropic, OpenAI, Goo
 
 ## 3. Higiena i Bezpieczeństwo (Telemetria)
 
-Podczas szybkiego rozwoju projektu społeczność zwróciła uwagę na domyślnie włączone moduły telemetryczne (PostHog).
-- **Rekomendacja**: W ustawieniach konfiguracyjnych upewnij się, że opcja raportowania telemetrii jest wyłączona (`telemetry: false`), a wrażliwe klucze API są przechowywane w zmiennych środowiskowych systemowego pęku kluczy.
+Podczas szybkiego rozwoju projektu według zgłoszeń (⚠️ niezweryfikowane) domyślnie włączone były moduły telemetryczne (PostHog).
+- **Rekomendacja**: W ustawieniach konfiguracyjnych upewnij się, że raportowanie telemetrii jest wyłączone (nazwę opcji, np. `telemetry: false`, sprawdź w dokumentacji), a wrażliwe klucze API są przechowywane w zmiennych środowiskowych systemowego pęku kluczy.
 
 ---
 

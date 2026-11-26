@@ -20,7 +20,9 @@ description: "Notatka Narzędziowa: OpenAI Codex / Reasoning Models (o3-mini, GP
 Modele z rodziny "o" (np. `o3-mini`, `o1`) działają w oparciu o wewnętrzne łańcuchy myślowe (Chain of Thought):
 - Przed wygenerowaniem odpowiedzi model generuje od kilkuset do kilkunastu tysięcy niewidocznych tokenów rozumowania.
 - **Wpływ na koszt**: Choć tokeny te nie zawsze są widoczne w oknie czatu, są w pełni rozliczane na poziomie API.
-- **Wpływ na jakość**: Bezbłędna eliminacja błędów typu off-by-one, znakomite operacje na grafach i weryfikacja logiki typów.
+- **Wpływ na jakość** (⚠️ niezweryfikowane): mogą pomagać przy błędach off-by-one, operacjach na grafach i logice typów. Wynik nadal trzeba testować.
+
+> Nazwy modeli w tej notatce mogą być nieaktualne — sprawdź bieżącą ofertę OpenAI.
 
 ---
 

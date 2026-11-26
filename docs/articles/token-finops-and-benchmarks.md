@@ -1,76 +1,75 @@
 ---
-title: "FinOps i Niezależne Benchmarki Tokenowe w Programowaniu Agentowym"
-description: "FinOps i Niezależne Benchmarki Tokenowe w Programowaniu Agentowym"
+title: "FinOps i Benchmarki Tokenowe w Programowaniu Agentowym"
+description: "Zestawienie publikacji o kosztach tokenowych agentów: co mierzono, na czym i czego z tego nie wolno uogólniać."
 ---
 
-Wielka synteza najnowszych badań empirycznych, analiz FinOps (Glean, Concordia, Stevens Institute, Bruniaux, Silfverskiöld) oraz pomiarów telemetrycznych z 2026 roku.
-
----
-
-## 1. Gdzie Naprawdę Uciekają Tokeny? Badania Empiryczne (Glean, Concordia & Stevens)
-
-Badania laboratoryjne nad wieloagentowymi systemami deweloperskimi (m.in. ChatDev) obaliły powszechne mity na temat struktury kosztów:
-
-| Kategoria zużycia | Udział w łącznym wolumenie tokenów | Wniosek inżynierski |
-|---|---|---|
-| **Samo Code Review i weryfikacja** | **59.4%** | Agenci recenzujący i dyskutujący o poprawkach spalają więcej tokenów niż agent piszący kod! |
-| **Tokeny Wejściowe (Input Context)** | **53.9% – 92%** | Koszt sesji zależy niemal wyłącznie od wielkości przesyłanego kontekstu, a nie od wygenerowanego kodu. |
-| **Pasywne logi i terminal** | **15% – 35%** | Wyniki komend powłoki (passing testy, paski pobierania) to czysty narzut bezwartościowy dla modelu. |
+Zestawienie publikacji o kosztach tokenowych agentów. Przy każdej liczbie podano, gdzie ją znaleziono. Liczby pochodzą z różnych zadań, modeli i metryk, więc **nie wolno ich sumować ani porównywać wprost**.
 
 ---
 
-## 2. Krytyczna Ewaluacja Narzędzi: Raport Floriana Bruniaux (`cc.bruniaux.com`)
+## 1. Gdzie uciekają tokeny (przykład ChatDev)
 
-Florian Bruniaux zestawił deklaracje marketingowe **43 komercyjnych i otwartoźródłowych narzędzi** z **8 niezależnymi benchmarkami** oraz 15 pracami z arXiv:
+[Glean](https://www.glean.com/perspectives/how-to-optimize-token-efficiency-in-agentic-systems) omawia badanie z Concordia University: 30 zadań w wieloagentowym systemie ChatDev. Ta sama praca jest w [katalogu Bruniaux](https://cc.bruniaux.com/token-savings) jako arXiv:2601.14470 (model GPT-5).
 
-### A. Narzędzia, które FAKTYCZNIE działają:
-1. **Filtry wyjścia CLI (np. RTK — Rust Token Killer)**:
-   - **Wynik**: Realna, powtarzalna redukcja **48% do 81% (w porywach do 90%)** tokenów wyjściowych z terminala.
-   - **Dlaczego działa**: Działa na zewnątrz modelu, w sposób czysto deterministyczny. Nie zniekształca promptu i nie wprowadza halucynacji.
-2. **Pasywne mapy symboli i repo-maps (AST)**:
-   - **Wynik**: Spadek liczby operacji `read_file` o ponad 75% przy skoku skuteczności za pierwszym razem do 95%+.
+| Pomiar | Wynik |
+|---|---|
+| Udział etapu code review w zużyciu tokenów | **59,4%** |
+| Udział tokenów wejściowych | **53,9%** |
 
-### B. Ostrzeżenie przed "Magicznymi Kompresorami Promptu":
-Bruniaux przestrzega przed narzędziami w locie kompresującymi prompt systemowy lub usuwającymi "zbędne słowa" z zapytania programisty:
-- **Rozbijanie Prompt Cache**: Dynamiczna kompresja tekstu w każdej turze powoduje ciągły *cache miss* u dostawcy API (Anthropic/OpenAI), przez co płacisz pełną stawkę za każdą turę.
-- **Degradacja rozumowania**: Usunięcie pozornie nieistotnych słów z kodu (np. kwalifikatorów typów czy nazw argumentów) drastycznie obniża precyzję modelu w zadaniach debugowania.
+To wynik dla jednego systemu wieloagentowego. Nie opisuje typowej sesji z jednym agentem w IDE.
 
 ---
 
-## 3. Cztery Filary Oszczędzania Tokenów (Ida Silfverskiöld)
+## 2. Katalog narzędzi Floriana Bruniaux
 
-W głośnym przewodniku dla Towards Data Science Ida Silfverskiöld definiuje 4 filary architektury FinOps:
+[Token-saving tools for coding agents](https://cc.bruniaux.com/token-savings) (stan na 30.09.2026) zestawia deklaracje 43 narzędzi z 8 publicznymi benchmarkami i 15 preprintami. Autor zaznacza, że współtworzył RTK.
 
-1. **Strategic Prompt Caching (Zysk: 41% – 80% kosztów API)**:
-   - Kluczem jest **niezmienność prefiksu**. Statyczne reguły i definicje narzędzi muszą znajdować się na samym początku promptu.
-   - **Zegar TTL Cache'a (5 minut)**: Dostawcy chmurowi trzymają cache w pamięci przez około 5 minut. Koordynacja pętli agentowych w tym oknie czasowym zamienia drogie zapytania w groszowe hity cache.
-2. **Leniwe Ładowanie Narzędzi (Lazy-Loading)**:
-   - Kategoryczny zakaz pre-ładowania 40 definicji funkcji MCP do każdej sesji.
-3. **Kaskady Spekulatywne (Speculative Cascades)**:
-   - Tani, mały model próbuje wykonać zadanie jako pierwszy. Dopiero w przypadku niskiej pewności (mierzonej logprobs / entropią) zapytanie jest eskalowane do drogiego modelu frontier.
-4. **Kompakcja Kontekstu (Context Compaction)**:
-   - Agresywne usuwanie śmieci z historii czatu po zakończeniu fazy eksploracji.
+- **RTK:** w prywatnych miesięcznych raportach autora (lipiec–wrzesień 2026) zaoszczędzone było **48–81% tokenów wyjścia CLI**. Autor zastrzega, że to **nie jest procent całego rachunku**.
+- **Pruning a prompt cache:** przytoczone w katalogu README jednego z narzędzi do pruningu ostrzega, że zmiana wcześniejszych wiadomości unieważnia zapisany prefiks i może zwiększyć liczbę *cache miss*.
+- Każde narzędzie ma w katalogu inną metrykę (tokeny, koszt, własny licznik). Przed użyciem liczby sprawdź, co dokładnie mierzono.
 
 ---
 
-## 4. LOOP Skill Engine i Deterministyczny Replay (Oszczędność > 93%)
+## 3. Przewodnik Idy Silfverskiold i prompt caching
 
-Artykuł *From Prototype to Profit* analizuje powtarzalne eksploracje agentów:
-- W powtarzalnych procesach deweloperskich (np. codzienne sprawdzanie zgłoszeń, generowanie raportów, aktualizacja zależności) agent za każdym razem "odkrywa Amerykę na nowo", paląc tysiące tokenów na błądzenie.
-- **Podejście LOOP / Hybrydowe `SKILL.md`**:
-  - Pierwsze przejście zadania jest rejestrowane jako deterministyczny graf kroków.
-  - Kolejne wywołania tego samego zadania korzystają z deterministycznego odtworzenia ścieżki (Replay).
-  - **Efekt**: Spadek zużycia tokenów o **93.3% do 99.98%** przy jednoczesnym braku ryzyka halucynacji.
+[Agentic AI: How to Save on Tokens](https://towardsdatascience.com/agentic-ai-how-to-save-on-tokens) (Towards Data Science, kwiecień 2026) omawia m.in.:
+
+1. **Prompt caching:** statyczna część promptu na początku. Według artykułu dostawcy usuwają cache zwykle po **około 5–10 minutach** bezczynności (u części można ten czas wydłużyć).
+2. **Lazy-loading** narzędzi i serwerów MCP.
+3. **Routing i kaskady:** najpierw tańszy model, eskalacja przy niskiej pewności.
+4. **Subagentów i kompakcję**, czyli utrzymywanie czystego kontekstu.
+
+Spotykana liczba **41–80% niższych kosztów API dzięki cache** pochodzi z innej pracy: *Don't Break the Cache: Prompt Caching for Long-Horizon Agentic Tasks*, przytoczonej w [katalogu Bruniaux](https://cc.bruniaux.com/token-savings).
 
 ---
 
-## 5. Doświadczenia Korporacyjne (Qt.io & 87 000 Wywołań Claude Code)
+## 4. LOOP Skill Engine: deterministyczny replay
 
-### A. Wnioski Qt.io dla Środowisk Enterprise
-- **Wycinki dokumentacji przez MCP**: Zamiast pozwalać agentowi na scrapowanie całych stron HTML z dokumentacją, serwer MCP serwuje chirurgicznie wycięte fragmenty Markdown zawierające wyłącznie sygnaturę szukanej klasy/metody.
-- **Determinizm Przed Inferencją**: Uruchomienie lintera, kompilatora i formatowania *przed* wysłaniem kodu do LLM eliminuje 80% zbędnych tur naprawczych.
+[From Prototype to Profit](https://towardsdatascience.com/from-prototype-to-profit-solving-the-agentic-token-burn-problem) (Rahul Vir) opisuje za pracą o LOOP Skill Engine nagrywanie udanego przebiegu i odtwarzanie go bez LLM.
 
-### B. Analiza 87 000 Wywołań (Shakib Uzzaman & Mykhailo Medved)
-- Dodawanie do środowiska "skilli oszczędzających tokeny" potrafi paradoksalnie **podnieść łączny koszt sesji**.
-- Jeśli skill wprowadza szum decyzyjny (agent waha się, czy go użyć, wykonuje niepotrzebne tool calle, a potem i tak czyta pliki), bilans tokenowy wychodzi na minus.
-- **Wniosek**: Tylko pasywne, deterministyczne mechanizmy (twarde filtry CLI, `.cursorignore`, statyczna mapa repo) dają gwarantowany zwrot z inwestycji (ROI).
+- Podawane oszczędności to **ponad 93,3% dla zadań codziennych i do 99,98% dla bardzo częstych**.
+- Dotyczy to **powtarzalnych, ustalonych przepływów** (w artykule m.in. procesy w przychodni). Nie jest to pomiar pracy programistycznej, a samej pracy źródłowej tutaj nie weryfikowano.
+
+---
+
+## 5. Qt: porady dla środowisk enterprise
+
+[Artykuł Qt](https://www.qt.io/software-insights/how-to-reduce-ai-token-usage-in-enterprise-agentic-development-workflows) (tekst producenta, opisujący także własne narzędzia) zaleca:
+
+- dostęp do dokumentacji przez MCP zwracający wycinki zamiast całych stron HTML,
+- **deterministyczne narzędzia przed inferencją**, np. linter uruchamiany przed code review przez agenta,
+- skille domenowe. W benchmarku QML100 skill Qt podniósł skuteczność jednego modelu z 64% do 75%.
+
+---
+
+## Usunięte twierdzenia
+
+Wcześniejsza wersja podawała też: przedziały 53,9–92% i 15–35% dla struktury kosztów, spadek `read_file` o 75% przy 95%+ skuteczności dzięki repo-mapom, eliminację 80% tur naprawczych przez linter oraz „analizę 87 000 wywołań”. **Nie znaleziono ich w sprawdzonych źródłach**, więc zostały usunięte.
+
+## Źródła
+
+- [Glean: How to optimize token efficiency in agentic systems](https://www.glean.com/perspectives/how-to-optimize-token-efficiency-in-agentic-systems)
+- [Florian Bruniaux: Token-saving tools for coding agents](https://cc.bruniaux.com/token-savings)
+- [Ida Silfverskiold: Agentic AI: How to Save on Tokens](https://towardsdatascience.com/agentic-ai-how-to-save-on-tokens)
+- [Rahul Vir: From Prototype to Profit](https://towardsdatascience.com/from-prototype-to-profit-solving-the-agentic-token-burn-problem)
+- [Qt: How to reduce AI token usage in enterprise workflows](https://www.qt.io/software-insights/how-to-reduce-ai-token-usage-in-enterprise-agentic-development-workflows)

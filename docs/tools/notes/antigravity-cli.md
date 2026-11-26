@@ -22,7 +22,7 @@ description: "Notatka Narzędziowa: Google Antigravity CLI (`agy`)"
 
 ### A. Arbitraż Modeli (Flash vs Pro)
 Antigravity pozwala na przypisanie modelu per-subagent:
-- **`flash` / `flash_lite`**: Zlecasz research, skanowanie repozytorium, przeglądanie dokumentacji i odpytywanie logów. Koszt jest symboliczny, a prędkość natychmiastowa.
+- **`flash` / `flash_lite`**: Zlecasz research, skanowanie repozytorium, przeglądanie dokumentacji i odpytywanie logów. Zwykle są tańsze i szybsze (skalę sprawdź w cenniku i u siebie).
 - **`pro` / `inherit`**: Zlecasz architekturę, audyt bezpieczeństwa i finalne scalanie kodu.
 
 ### B. Reaktywny Model Zdarzeń (Zero Polling)

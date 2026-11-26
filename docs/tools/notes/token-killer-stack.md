@@ -3,13 +3,15 @@ title: "Kompendium: Ekosystem 4 Narzędzi Redukcji Tokenów (RTK, Context Mode, 
 description: "Kompendium: Ekosystem 4 Narzędzi Redukcji Tokenów (RTK, Context Mode, Ponytail, Caveman)"
 ---
 
-Szczegółowy przegląd nowoczesnego stosu FinOps dla programowania agentowego (opisanego m.in. w DataCamp i analizach Floriana Bruniaux).
+Szczegółowy przegląd nowoczesnego stosu FinOps dla programowania agentowego (opisanego m.in. w DataCamp — ⚠️ strony nie udało się odczytać przy weryfikacji — i w analizach Floriana Bruniaux).
+
+> :warning: Procenty zysków w tej notatce to deklaracje autorów narzędzi lub opracowań wtórnych. **Nie zostały zweryfikowane** i nie sumują się.
 
 ---
 
 ## 🏗️ Matryca 4 Warstw Pętli Agenta
 
-Tokeny w pętli agenta uciekają w 4 różnych punktach. Każde z poniższych narzędzi zabezpiecza inny odcinek pętli, dzięki czemu wzajemnie się nie dublują:
+Tokeny w pętli agenta uciekają w 4 różnych punktach. Każde z poniższych narzędzi zabezpiecza inny odcinek pętli, więc w założeniu uzupełniają się (przed łączeniem sprawdź, czy nie modyfikują tych samych poleceń lub wyników):
 
 ```
                       ┌─────────────────────────────────┐
@@ -17,7 +19,7 @@ Tokeny w pętli agenta uciekają w 4 różnych punktach. Każde z poniższych na
                       └────────────────┬────────────────┘
                                        │
                     [WARSTWA 1: Wejście z CLI] ──► RTK (Rust Token Killer)
-                    Cięcie logów, testów i gita o 60–90%
+                    Cięcie logów, testów i gita (do 90%)
                                        │
                                        ▼
                       ┌─────────────────────────────────┐
@@ -45,7 +47,7 @@ Tokeny w pętli agenta uciekają w 4 różnych punktach. Każde z poniższych na
 ## 1. RTK (Rust Token Killer) — Warstwa Terminala
 - **Co optymalizuje**: To, co agent **odczytuje z procesów powłoki**.
 - **Mechanizm**: Przechwytuje wywołania `git`, `cargo`, `npm`, `pytest`, `docker`. Zamiast 500 linii przechodzących testów przekazuje jedną linijkę podsumowania i wyciąga wyłącznie błędy.
-- **Zysk**: 60% – 90% redukcji tokenów wyjściowych z komend.
+- **Zysk**: według autorów do 90% mniej wyjścia komend ([README](https://github.com/rtk-ai/rtk), odczyt 26.11.2026). To nie jest procent rachunku.
 - **Więcej**: [Notatka o RTK](/tokensavemaxxing/tools/notes/rtk/).
 
 ---
@@ -67,7 +69,7 @@ Tokeny w pętli agenta uciekają w 4 różnych punktach. Każde z poniższych na
   1. Czy da się to zrobić standardowymi funkcjami języka bez nowych klas?
   2. Czy funkcja istnieje już w projekcie?
   3. Kategoryczny zakaz dodawania zależności, jeśli funkcjonalność wymaga mniej niż 30 linii kodu.
-- **Zysk**: Zmniejsza rozmiar generowanych diffów o 40–60%, ułatwiając code review i eliminując dług technologiczny.
+- **Zysk**: mniejsze diffy ułatwiają code review; deklarowane 40–60% — ⚠️ niezweryfikowane.
 
 ---
 
@@ -78,4 +80,4 @@ Tokeny w pętli agenta uciekają w 4 różnych punktach. Każde z poniższych na
   - Zero grzecznościowych wstępów.
   - Zero powtarzania pytania użytkownika.
   - Odpowiedź składa się wyłącznie z gotowego kodu lub listy zmienionych linii.
-- **Zysk**: Skraca output konwersacyjny o 50–70%, przyspieszając czas odpowiedzi o kilka sekund per tura.
+- **Zysk**: krótszy output konwersacyjny; deklarowane 50–70% i oszczędność czasu — ⚠️ niezweryfikowane.

@@ -3,14 +3,14 @@ title: "Playbook 05: Bezpieczny Refaktoring i Zautomatyzowany Code Review"
 description: "Playbook 05: Bezpieczny Refaktoring i Zautomatyzowany Code Review"
 ---
 
-Procedura przeprowadzania dużych zmian strukturalnych kodu oraz audytu pull requestów przy pomocy bezstronnego subagenta recenzenta.
+Procedura przeprowadzania dużych zmian strukturalnych kodu oraz audytu pull requestów przy pomocy niezależnego subagenta recenzenta.
 
 ---
 
 ## 1. Pułapka Samooceny Agenta (Self-Review Bias)
 
-Model, który właśnie napisał 150 linii kodu, ma tendencję do twierdzenia, że kod jest idealny, gdy zapytasz go w tym samym czacie: *"Czy widzisz tu jakieś błędy?"*.
-Wynika to z faktu, że wcześniejsze tokeny w historii utwierdzają go w słuszności własnych decyzji.
+Model, który właśnie napisał 150 linii kodu, może przeoczać własne błędy, gdy zapytasz go w tym samym czacie: *"Czy widzisz tu jakieś błędy?"*.
+Prawdopodobna przyczyna: wcześniejsze tokeny w historii kierują ocenę ku własnym założeniom.
 
 ### Rozwiązanie: Niezależny Subagent Reviewer
 Recenzja kodu musi odbywać się:

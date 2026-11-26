@@ -1,74 +1,45 @@
 ---
 title: "Analiza Architektury: Inkling 2 Mini (Thinking Machines Lab)"
-description: "Analiza Architektury: Inkling 2 Mini (Thinking Machines Lab)"
+description: "Inkling 2 Mini jako transformer z pętlą: parametry, pamięć i wyniki według ogłoszenia producenta."
 ---
 
-Analiza techniczna przełomowego modelu otwartego **Inkling 2 Mini**, wydanego 20 listopada 2026 r. przez laboratorium **Thinking Machines Lab** (założone przez byłą CTO OpenAI, Mirę Murati).
-
----
-
-## 1. Dlaczego Inkling 2 Mini to Przełom dla Modeli Lokalnych?
-
-Do tej pory modele lokalne zmuszały do kompromisu:
-- Albo mały model 7B/8B (mieszczący się w VRAM, ale o ograniczonej głębokości rozumowania),
-- Albo potężny model 70B+ (wymagający klastra GPU za dziesiątki tysięcy dolarów).
-
-**Inkling 2 Mini** rozwiązuje ten problem dzięki nowatorskiej architekturze **Looped Mixture-of-Experts (MoE)** pod licencją **Apache 2.0**.
+Opracowanie ogłoszenia [Introducing Inkling 2 Mini](https://thinkingmachines.ai/news/inkling-2-mini) (Thinking Machines Lab, 20.11.2026). Wszystkie liczby pochodzą **od producenta**. To strona o modelu lokalnym; sama nie dowodzi oszczędności tokenów.
 
 ---
 
-## 2. Architektura "Looped Transformer" — Pętla Myślenia bez Rozrostu Wag
+## 1. Architektura „looped transformer”
+
+Model typu Mixture-of-Experts, którego środkowe bloki wykonują się **trzy razy dla każdego tokenu**.
 
 ```
-Wejście (Prompt)
-       │
-       ▼
-┌───────────────────────────────────────────┐
-│  Prelude: Warstwy 0 – 5 (1 przejście)     │  Wstępna ekstrakcja cech
-└──────────────────────┬────────────────────┘
-                       │
-                       ▼
-┌───────────────────────────────────────────┐ ◄──┐
-│  Middle MoE: Warstwy 6 – 17               │    │  PĘTLA 3-KROTNA
-│  Współdzielone wagi (Shared Weights)      │    │  (3 iterations)
-│  Aktywacja: ~3.4B wag per token           │    │  48 logicznych warstw
-└──────────────────────┬────────────────────┘ ───┘
-                       │
-                       ▼
-┌───────────────────────────────────────────┐
-│  Postlude: Warstwy 18 – 23 (1 przejście)  │  Finalna projekcja tokenu
-└──────────────────────┬────────────────────┘
-                       │
-                       ▼
-Wyjście (Odpowiedź)
+Prelude (1×) → bloki 2 i 3 (3×, te same wagi) → blok końcowy (1×)
 ```
 
-### Parametry Modelu:
-- **Całkowita liczba parametrów**: ~26.4 miliarda (26.4B).
-- **Aktywne parametry na token**: zaledwie **~3.4B** unikalnych wag (~5.4B efektywnych parametrów przy pętli).
-- **24 fizyczne warstwy dekodera**:
-  - Warstwy 0–5 (preludium) wykonują się 1 raz.
-  - Warstwy 18–23 (postludium) wykonują się 1 raz.
-  - **12 warstw środkowych (6–17) wykonuje się 3-krotnie w pętli** z użyciem tych samych wag.
-- **Efekt**: Model wykonuje **48 logicznych przejść warstwowych per token**, co daje mu głębię rozumowania odpowiadającą modelom o wielokrotnie większej liczbie fizycznych wag, przy zachowaniu minimalnego narzutu pamięciowego!
+- Przejścia 2 i 3 otrzymują dodatkowo wyniki poprzedniego przejścia („message”); każde przejście dostaje wyjście prelude.
+- **24 zapisane warstwy dają 48 zastosowań warstw na token.**
+
+| Parametr | Wartość |
+|---|---|
+| Parametry łącznie | 26,4 mld |
+| Parametry aktywne | 3,4 mld |
+| Aktywacje wag na token (z uwzględnieniem pętli) | 5,4 mld |
+| Łączne zużycie pamięci (NVFP4, ostatnie cztery warstwy MXFP8) | ok. 20 GB |
 
 ---
 
-## 3. Zdolności i Zastosowanie Deweloperskie
+## 2. Dostępność i wyniki
 
-1. **Okno kontekstowe do 1 miliona tokenów (1M Context)**:
-   Niezwykle rzadka cecha wśród modeli otwartych zoptymalizowanych pod lokalny sprzęt.
-2. **Natywna multimodalność**:
-   Przyjmuje na wejściu zarówno tekst, jak i obrazy (zrzuty ekranu UI, diagramy architektoniczne).
-3. **Wydajność w zadaniach agentowych (DeepSWE / Tool-use)**:
-   W testach inżynierii oprogramowania i benchmarkach Artificial Analysis model dorównuje modelom stacjonarnym klasy Qwen 3.8 27B, zużywając ułamek zasobów obliczeniowych.
+- Model ma **otwarte wagi**, dostępne na Hugging Face.
+- Inferencja według ogłoszenia: SGLang, vLLM, Ollama, Unsloth, NVIDIA Dynamo, TokenSpeed i Llama App. Skwantyzowane GGUF są dostępne przez Unsloth i llama.cpp.
+- Producent mówi o uruchamianiu na laptopach i stacjach typu DGX Spark.
+- W benchmarkach agentowego kodowania (np. DeepSWE v1.1: 48,2%) producent stawia model przed porównywalnymi modelami; w niektórych innych ustępuje tylko Qwen3.8-27B. Konfiguracje ewaluacji różnią się między modelami.
 
 ---
 
-## 4. Inkling 2 Mini na Sprzęcie z 12 GB VRAM
+## 3. Czego ogłoszenie nie potwierdza
 
-Dystrybuowany jest w formacie ~20 GB (wagi w formatach NVFP4 / MXFP8).
-- **Wsparcie Day-Zero**: Dostępny od pierwszego dnia w `llama.cpp`, vLLM, SGLang oraz MLX (`thinkingmachines/Inkling-2-Mini`).
-- **Praca na 12 GB VRAM**:
-  - Ponieważ aktywnych jest tylko ~3.4B parametrów, w kwantyzacji 4-bitowej (GGUF / NVFP4) z częściowym offloadingiem do RAM komputera model działa płynnie na domowych stacjach roboczych.
-  - Stanowi doskonałą alternatywę dla standardowych modeli gęstych (dense 7B/14B) jako lokalny mózg agentowy.
+Wcześniejsza wersja podawała okno 1M tokenów, licencję Apache 2.0, informacje o założycielce firmy, płynne działanie na 12 GB VRAM, obsługę MLX i podział na numerowane warstwy. **Na tej stronie ich nie znaleziono**, więc zostały usunięte. Przy ~20 GB zużycia pamięci działanie na 12 GB VRAM wymagałoby innej kwantyzacji lub przeniesienia części modelu do RAM; sprawdź to na własnym sprzęcie. Licencję sprawdź na karcie modelu.
+
+## Źródła
+
+- [Thinking Machines Lab: Introducing Inkling 2 Mini](https://thinkingmachines.ai/news/inkling-2-mini)

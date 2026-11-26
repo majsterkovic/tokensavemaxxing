@@ -1,58 +1,65 @@
 ---
-title: "Pasywny Kontekst vs Dynamiczne Narzędzia (Ewaluacja Vercel)"
-description: "Pasywny Kontekst vs Dynamiczne Narzędzia (Ewaluacja Vercel)"
+title: "Pasywny Kontekst vs Skille (Ewaluacja Vercel)"
+description: "Ewaluacja Vercel: indeks dokumentacji Next.js w AGENTS.md kontra skill ładowany na żądanie."
 ---
 
-Analiza oficjalnego badania inżynierów Vercel (styczeń 2026) nad skutecznością agentów AI w projektach z nowym API Next.js 16 oraz powiązanej dyskusji na Hacker News (wątek #46809708).
-
----
-
-## 1. Konstrukcja Badania
-
-Vercel przeprowadził benchmark porównujący, jak modele językowe radzą sobie z implementacją zadań wymagających wiedzy o najnowszych zmianach w API Next.js 16 (gdzie wiedza bazowa modelu z pre-trainingu zawierała stare lub nieaktualne wzorce).
-
-Przetestowano trzy strategie dostarczania wiedzy:
-1. **Baseline**: Brak zewnętrznej dokumentacji (agent korzysta z wiedzy wbudowanej i zgaduje).
-2. **Skill / On-Demand Tool**: Agent ma do dyspozycji narzędzie / skill, który potrafi pobrać oficjalną dokumentację Next.js, jeśli agent uzna to za konieczne.
-3. **Skill + Jawne Instrukcje Promptu**: Agent ma skill oraz w prompcie systemowym twardy nakaz: *"Przed użyciem API sprawdź dokumentację przez skill"*.
-4. **Pasywny, skompresowany indeks (8KB w AGENTS.md)**: Skondensowana mapa zmian w składni załadowana bezpośrednio do kontekstu startowego.
+Analiza wpisu Vercel [AGENTS.md outperforms skills in our agent evals](https://vercel.com/blog/agents-md-outperforms-skills-in-our-agent-evals) (styczeń 2026). Dyskusja: [Hacker News #46809708](https://news.ycombinator.com/item?id=46809708).
 
 ---
 
-## 2. Wyniki Liczbowe
+## 1. Konstrukcja ewaluacji
 
-| Konfiguracja | Pass Rate (Sukces zadania) | Różnica vs Baseline | Częstotliwość użycia narzędzia |
-|---|---|---|---|
-| **1. Baseline** | 53% | — | — |
-| **2. Skill (autonomiczna decyzja)** | **53%** | **+0 pp** | Użyty tylko w 44% przypadków! |
-| **3. Skill + Wymuszenie w prompcie** | 79% | +26 pp | Użyty w ~88% przypadków |
-| **4. Skompresowany indeks w AGENTS.md** | **100%** | **+47 pp** | Zawsze obecny (100%) |
+Zadania wymagały znajomości nowych API Next.js 16, których model mógł nie znać z treningu. Porównano cztery konfiguracje:
 
-### Krytyczna obserwacja: Awaria mechanizmu agent-decided activation
-W konfiguracji nr 2, **w 56% przypadków agent nigdy nie wywołał narzędzia**, mimo że zadanie wprost dotyczyło nowego API, a narzędzie było w pełni dostępne i sprawne.
-Co więcej, w rozbiciu na testy jednostkowe, obecność nieużywanego skilla w środowisku **obniżyła wyniki z 63% do 58%**, wprowadzając szum decyzyjny (decision noise).
+1. **Baseline:** bez dodatkowej dokumentacji.
+2. **Skill:** agent sam decyduje, czy go uruchomić.
+3. **Skill + jawna instrukcja** w `AGENTS.md`, żeby go używać.
+4. **Skompresowany indeks dokumentacji w `AGENTS.md`** (z około 40 KB do 8 KB).
 
 ---
 
-## 3. Dlaczego Pasywny Kontekst Zawsze Wygrywa?
+## 2. Wyniki
 
-Z dyskusji architektów na Hacker News i wniosków Vercel wynikają trzy fundamentalne mechanizmy poznawcze modeli LLM:
+| Konfiguracja | Pass rate | Względem baseline |
+|---|---|---|
+| Baseline | 53% | — |
+| Skill (decyzja agenta) | 53% | +0 pp |
+| Skill + jawna instrukcja | 79% | +26 pp |
+| Indeks dokumentacji w `AGENTS.md` | **100%** | +47 pp |
 
-### 1. Eliminacja punktu decyzyjnego (Zero Decision Points)
-Gdy agent musi sam zdecydować: *"Czy to, co wiem, jest wystarczające, czy powinienem wykonać tool call?"*, występuje zjawisko **nadmiernej pewności siebie (overconfidence)**. Model przewiduje najbardziej prawdopodobny token na podstawie wag, zakładając, że jego wiedza jest poprawna. Nie ma świadomości własnej niewiedzy. W pasywnym kontekście wiedza już jest w oknie, model po prostu ją widzi.
-
-### 2. Eliminacja problemu kolejności (Sequential Order Conflict)
-Wywołanie narzędzia wymaga sekwencyjnego planowania:
-`Decyzja o search -> Oczekiwanie na odpowiedź narzędzia -> Parsowanie -> Planowanie kodu -> Zapis pliku`.
-Jeśli cokolwiek w tym łańcuchu zostanie zakłócone, model przeskakuje od razu do fazy zapisu, pomijając krok weryfikacji.
-
-### 3. Asynchroniczność i opóźnienia
-Pobieranie wiedzy dynamicznie wydłuża czas tury i rozbija spójność pamięci roboczej agenta (working memory).
+- W konfiguracji ze skillem bez instrukcji **w 56% przypadków skill nie został w ogóle użyty**.
+- Z jawną instrukcją skill uruchamiał się w **ponad 95%** przypadków.
+- W części testów nieużywany skill wypadł gorzej niż baseline (**58% vs 63%**).
 
 ---
 
-## 4. Wnioski dla Inżynierii Flow
+## 3. Czego ten wynik nie dowodzi
 
-1. **Kluczowa architektura systemu musi być pasywna**: Nie polegaj na skillu do pobierania mapy projektu. Umieść zwięzłą mapę (`REPO-MAP.md` lub `AGENTS.md`) w plikach ładowanych pasywnie.
-2. **Kompaktowość jest kluczem**: Vercel skompresował 40KB dokumentacji do **8KB** w formacie pipe-delimited (`folder/plik -> lista symboli / reguł`). Dało to 100% skuteczności bez marnowania tokenów.
-3. **Zasada brzytwy Ockhama dla Skills**: Każdy dodany skill zwiększa ryzyko, że model wybierze błędne narzędzie lub ulegnie dekoncentracji. Jeśli coś można dostarczyć w 20 linijkach zwięzłego tekstu — zrób to w tekście, nie w narzędziu.
+- Indeks wskazywał **pliki dokumentacji Next.js**. **Nie była to mapa kodu** ani mapa eksportów. Wynik nie dowodzi, że `REPO-MAP.md` z tego repozytorium daje 100%.
+- Wpis nie podaje liczby przypadków testowych ani modeli, więc nie da się ocenić niepewności.
+- To jeden framework i jeden rodzaj zadań. Nie wynika z tego, że pasywny kontekst zawsze wygrywa. Autorzy sami wskazują, że skille nadają się do konkretnych, wywoływanych przez użytkownika procedur.
+
+---
+
+## 4. Prawdopodobne mechanizmy
+
+Vercel wskazuje jako możliwe wyjaśnienia:
+
+1. **Brak punktu decyzyjnego:** informacja jest w kontekście, agent nie musi uznać, że czegoś nie wie.
+2. **Stała dostępność:** indeks jest obecny w każdej turze, a skill ładuje się asynchronicznie.
+3. **Brak problemu kolejności:** nie trzeba wybierać, czy najpierw czytać dokumentację, czy eksplorować projekt.
+
+To interpretacje autorów, a nie osobno zmierzone przyczyny.
+
+---
+
+## 5. Wnioski praktyczne (autorskie)
+
+1. Wiedzę potrzebną w większości zadań dawaj jako **krótki indeks** w `AGENTS.md`, a szczegóły w plikach czytanych na żądanie.
+2. Pasywny kontekst też kosztuje: jest wysyłany w każdej sesji, więc pilnuj jego rozmiaru.
+3. Jeśli polegasz na skillu, sprawdź na własnych zadaniach, czy faktycznie się uruchamia.
+
+## Źródła
+
+- [Vercel: AGENTS.md outperforms skills in our agent evals](https://vercel.com/blog/agents-md-outperforms-skills-in-our-agent-evals)
+- [Hacker News #46809708](https://news.ycombinator.com/item?id=46809708)

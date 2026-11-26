@@ -6,8 +6,8 @@ alwaysApply: true
 # Dyscyplina Efektywności Tokenowej
 
 - Przed wykonaniem `read_file` sprawdź `.cursor/REPO-MAP.md` i użyj `grep` dla konkretnego symbolu.
-- Nie czytaj tego samego pliku dwukrotnie w ramach jednej sesji roboczej.
+- Nie czytaj ponownie pliku, który się nie zmienił i którego treść nadal masz w kontekście.
 - Pliki powyżej 300 linii czytaj wyłącznie zakresem (start_line, end_line).
-- Nie uruchamiaj `build` / `test` / `lint` po każdej drobnej edycji — tylko gdy zmiana jest ryzykowna lub użytkownik o to poprosi.
-- Zakończ działanie natychmiast po wykonaniu zadania — bez zbędnych rund „dla upewnienia się".
+- W trakcie pracy uruchamiaj najwęższy test dla zmienianego kodu zamiast całego pakietu.
+- Przed zgłoszeniem zakończenia zawsze uruchom weryfikację zmienionego zakresu (testy, typecheck, lint) i podaj wynik.
 - Całkowity zakaz odczytywania: `dist/`, `build/`, `node_modules/`, lockfile'ów, `*.generated.*`.

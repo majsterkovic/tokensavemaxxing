@@ -17,13 +17,13 @@ Szczegółowy przegląd i charakterystyka wszystkich narzędzi dostępnych w Two
 ├─────────────────────────────────────────────────────────────────────────┤
 │  2. AGENCI WYKONAWCZY & CLI HARNESSY (Execution Engines)                │
 │  - Claude Code: Szybkie zadania terminalowe, zaawansowane subagenty     │
-│  - Codex (OpenAI): Precyzyjne operacje kodujące, o3-mini / GPT-4o        │
+│  - Codex (OpenAI): Precyzyjne operacje kodujące                         │
 │  - Antigravity (AGY): Orkiestracja Python workflows, swarmy, skills     │
 │  - OpenCode: Otwarty TUI agent, 75+ modeli, LSP, natywne modele lokalne │
 ├─────────────────────────────────────────────────────────────────────────┤
 │  3. SILNIKI WNIOSKOWANIA (Inference Tier)                               │
-│  - Cloud Frontier: Claude 3.7 Sonnet, Gemini 2.0 Pro (Architektura)     │
-│  - Cloud Scout: Gemini 2.0 Flash, Claude 3.5 Haiku (Szybki research)   │
+│  - Cloud Frontier: modele klasy Opus/Sonnet i Pro (Architektura)        │
+│  - Cloud Scout: modele klasy Flash / Haiku (Szybki research)            │
 │  - Local Models (12 GB VRAM): Qwen 2.5 Coder 7B/14B, DeepSeek-R1-Distill│
 ├─────────────────────────────────────────────────────────────────────────┤
 │  4. PODŁOŻE SYSTEMOWE (System Substrate)                                │
@@ -59,12 +59,12 @@ Szczegółowy przegląd i charakterystyka wszystkich narzędzi dostępnych w Two
 
 ### A. Claude Code
 - **Cechy**: Oficjalne narzędzie CLI firmy Anthropic.
-- **Mocna strona**: Znakomite rozumowanie przy skomplikowanym kodzie (Claude 3.7 Sonnet), bezpośrednia integracja z narzędziami terminala i sprawna obsługa subagentów badawczych.
+- **Mocna strona**: Znakomite rozumowanie przy skomplikowanym kodzie, bezpośrednia integracja z narzędziami terminala i sprawna obsługa subagentów badawczych.
 - **Zastosowanie w tokensavemaxxing**: Idealny do implementacji krytycznych algorytmów i refaktoringu.
 
 ### B. Codex (OpenAI CLI / Assistant)
-- **Cechy**: Ekosystem agentowy OpenAI (o3-mini, GPT-4o).
-- **Mocna strona**: Potężna logika matematyczna i algorytmiczna modeli z serii "o" (reasoning tokens).
+- **Cechy**: Ekosystem agentowy OpenAI.
+- **Mocna strona**: Potężna logika matematyczna i algorytmiczna modeli rozumujących (reasoning tokens).
 - **Zastosowanie**: Rozwiązywanie zawiłych problemów logiki biznesowej i audyt bezpieczeństwa.
 
 ### C. Antigravity CLI (`agy`)
@@ -87,7 +87,7 @@ Twoim fundamentem wykonawczym jest **WSL** (Linux na Windowsie).
 
 ### Żelazna Zasada Wydajności I/O w WSL:
 > ⚠️ **NIGDY NIE TRZYMAJ PROJEKTÓW W `/mnt/c/...`**
-> Dostęp do plików systemu Windows z poziomu WSL przez mostek `/mnt/c/` generuje potężny narzut na operacjach I/O (spadek wydajności gita, ripgrepa i testów nawet o 10× - 20×).
+> Dostęp do plików systemu Windows z poziomu WSL przez mostek `/mnt/c/` generuje potężny narzut na operacjach I/O (operacje gita, ripgrepa i testów bywają wielokrotnie wolniejsze).
 
 - **Zawsze pracuj w linuksowym systemie plików**: `/home/mariusz/projekty/...`.
 - **Dostęp z Windowsa**: W eksploratorze plików Windows wpisuj ścieżkę sieciową `\\wsl$\Ubuntu\home\mariusz\...`.
@@ -97,7 +97,7 @@ Twoim fundamentem wykonawczym jest **WSL** (Linux na Windowsie).
 
 ## 4. Warstwa Modeli Lokalnych (Local Models — 12 GB VRAM)
 
-Dysponujesz kartą z **12 GB pamięci VRAM** (np. RTX 3060 12GB lub RTX 4070 12GB). W architekturze **tokensavemaxxing** modele lokalne odgrywają kluczową rolę: **kosztują dokładnie 0 tokenów i 0 zł**.
+Dysponujesz kartą z **12 GB pamięci VRAM** (np. RTX 3060 12GB lub RTX 4070 12GB). W architekturze **tokensavemaxxing** modele lokalne mogą przejąć część zadań **bez opłat za API** (nadal kosztują prąd, sprzęt i czas).
 
 ### A. Co mieści się w 12 GB VRAM?
 
@@ -110,8 +110,8 @@ Dysponujesz kartą z **12 GB pamięci VRAM** (np. RTX 3060 12GB lub RTX 4070 12G
 | **SmolLM2 1.7B / Qwen 1.5B** | Q8_0 | ~2 GB | Błyskawiczny routing, klasyfikacja plików, ekstrakcja metadanych |
 
 ### B. Jak Wykorzystać Modele Lokalne w tokensavemaxxing:
-1. **Darmowy Pre-Screening i Klasyfikacja**: Zamiast pytać Claude Sonnet za $0.03 o to, które pliki w katalogu odpowiadają za routing, lokalny Qwen 7B może to przeskanować w ułamku sekundy.
-2. **Generowanie Testów Jednostkowych**: Proste testy funkcji czystych (pure functions) lokalny model 14B generuje bezbłędnie.
+1. **Darmowy Pre-Screening i Klasyfikacja**: Zamiast pytać płatny model o to, które pliki w katalogu odpowiadają za routing, lokalny Qwen 7B może to wstępnie przejrzeć (czas i jakość sprawdź u siebie).
+2. **Generowanie Testów Jednostkowych**: Proste testy funkcji czystych (pure functions) lokalny model 14B często potrafi wygenerować; wynik trzeba uruchomić i przejrzeć.
 3. **Audyt Bezpieczeństwa Prywatnych Danych**: Kod zawierający wrażliwe schematy baz lub wewnętrzne algorytmy nie musi opuszczać Twojego komputera.
 4. **Backend dla OpenCode**: W OpenCode możesz wskazać `http://localhost:11434/v1` (Ollama) jako providera dla trybu `plan` lub `build`.
 
@@ -123,8 +123,8 @@ Dysponujesz kartą z **12 GB pamięci VRAM** (np. RTX 3060 12GB lub RTX 4070 12G
 |---|---|---|---|---|
 | **Zarządzanie sesjami i wątkami** | T3 Code / Herdr | — | 0 | [T3 Code](/tokensavemaxxing/tools/notes/t3-code/), [Herdr](/tokensavemaxxing/tools/notes/herdr/) |
 | **Eksploracja i Scout (czytanie)** | Antigravity / OpenCode | Gemini Flash / Haiku / Qwen 7B | Bardzo niski / 0 | [Antigravity CLI](/tokensavemaxxing/tools/notes/antigravity-cli/), [OpenCode](/tokensavemaxxing/tools/notes/opencode/) |
-| **Architektura i Planowanie** | Claude Code / T3 Code / Antigravity | Claude 3.7 Sonnet / o3-mini | Płatny (inwestycja) | [Claude Code](/tokensavemaxxing/tools/notes/claude-code/), [Codex](/tokensavemaxxing/tools/notes/codex/) |
-| **Trudna Implementacja & RCA** | Claude Code / Codex | Claude 3.7 Sonnet / o3-mini | Płatny | [Claude Code](/tokensavemaxxing/tools/notes/claude-code/), [Codex](/tokensavemaxxing/tools/notes/codex/) |
+| **Architektura i Planowanie** | Claude Code / T3 Code / Antigravity | Mocny model chmurowy | Płatny (inwestycja) | [Claude Code](/tokensavemaxxing/tools/notes/claude-code/), [Codex](/tokensavemaxxing/tools/notes/codex/) |
+| **Trudna Implementacja & RCA** | Claude Code / Codex | Mocny model chmurowy | Płatny | [Claude Code](/tokensavemaxxing/tools/notes/claude-code/), [Codex](/tokensavemaxxing/tools/notes/codex/) |
 | **Masowy Refaktoring w tle** | Herdr + OpenCode | Qwen 2.5 Coder 14B / Flash | 0 / Minimalny | [Herdr](/tokensavemaxxing/tools/notes/herdr/), [OpenCode](/tokensavemaxxing/tools/notes/opencode/) |
 | **Modele Lokalne (0 zł / 0 tokenów)**| Ollama / WSL | Qwen 2.5 Coder, DeepSeek R1 7B | **0 zł** | [Modele Lokalne 12 GB](/tokensavemaxxing/tools/notes/local-models-12gb/) |
 | **Środowisko Uruchomieniowe**| WSL (Ubuntu/Linux) | — | — | [WSL](/tokensavemaxxing/tools/notes/wsl/) |

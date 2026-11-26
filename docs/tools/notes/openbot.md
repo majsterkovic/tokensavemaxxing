@@ -30,4 +30,4 @@ description: "Notatka Narzędziowa: OpenBot"
 ## 3. Zastosowanie w tokensavemaxxing
 
 - OpenBot może działać jako lokalny zarządca piaskownic dla zadań wymagających wykonania niebezpiecznego kodu.
-- Pozwala na bezpłatną orkiestrację agentów opartych o modele lokalne (Ollama / Inkling 2 Mini / Qwen 2.5 Coder) bez narzutu komercyjnych platform chmurowych.
+- Pozwala na bezpłatną orkiestrację agentów opartych o modele lokalne (np. Ollama / Qwen 2.5 Coder) bez narzutu komercyjnych platform chmurowych.

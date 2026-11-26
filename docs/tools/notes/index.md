@@ -17,9 +17,9 @@ Skondensowane karty konfiguracji, ról i pułapek dla każdego narzędzia w Twoi
 
 ## ⚡ Redukcja Tokenów, Skills i Środowisko
 
-- [RTK (Rust Token Killer)](/tokensavemaxxing/tools/notes/rtk/) — deterministyczny filtr CLI tnący 60–90% szumu komend.
+- [RTK (Rust Token Killer)](/tokensavemaxxing/tools/notes/rtk/) — deterministyczny filtr CLI ograniczający szum komend (autorzy deklarują do 90% mniej wyjścia poleceń).
 - [Token-Killer Stack](/tokensavemaxxing/tools/notes/token-killer-stack/) — zestawienie wtyczek i proxy redukujących zużycie tokenów.
 - [OpenCode DCP](/tokensavemaxxing/tools/notes/opencode-dcp/) — Dynamic Context Pruning bezpośrednio w OpenCode.
 - [Superpowers & Agent Skills](/tokensavemaxxing/tools/notes/superpowers-and-agent-skills/) — standard `SKILL.md` i wzorce `obra/superpowers`.
-- [Modele Lokalne (12 GB VRAM)](/tokensavemaxxing/tools/notes/local-models-12gb/) — kwantyzacje Qwen 2.5 Coder, DeepSeek R1 i Inkling 2 Mini.
+- [Modele Lokalne (12 GB VRAM)](/tokensavemaxxing/tools/notes/local-models-12gb/) — kwantyzacje Qwen 2.5 Coder i DeepSeek R1 (oraz dlaczego Inkling 2 Mini wymaga więcej niż 12 GB).
 - [WSL (Windows Subsystem for Linux)](/tokensavemaxxing/tools/notes/wsl/) — natywne I/O w `/home/...`, konfiguracja `.wslconfig` i CUDA.
